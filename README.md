@@ -8,13 +8,13 @@ My January entry for One Game A Month 2013
 >Your solar system is under attack!  
   
 >Your scout ship is directing your people's only defense:  
->A giant defensive cannon that can obliberate dozens of ships at once.
+>A giant defensive cannon that can obliterate dozens of ships at once.
   
 >Try not to get hit by enemy fire while killing as many as possible.
 
 Story will be updated and refined during the month.
 
-## Todo ##
+## To-do ##
 
 ### Week 1 ###
 
