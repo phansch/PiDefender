@@ -3,9 +3,10 @@ vector = require ".libraries.hump.vector"
 winWidth = love.graphics.getWidth()
 winHeight = love.graphics.getHeight()
 
+local playerSize = 0.5
+
 Player = Class{function(self)
     self.pos = vector.new(winWidth / 2, winHeight/2)
-    self.direction = vector.new(0, 0)
 end}
 Player.speed = 5
 
@@ -14,9 +15,11 @@ function Player:update(dt, player)
 end
 
 function Player:draw()
-    angle = math.atan2(self.pos.y-self.direction.y, self.pos.x-self.direction.x) + math.pi
+    if(self.direction:dist(self.pos) > 200) then
+       angle = math.atan2(self.pos.y-self.direction.y, self.pos.x-self.direction.x) + math.pi - playerSize/2
+    end
 
     love.graphics.print("angle: " .. angle, 30, 10)
     love.graphics.print("Distance center <-> mouse: "..self.pos:dist(self.direction), 30, 30)
-    love.graphics.arc( "line", self.pos.x, self.pos.y, 230, angle, angle + 0.5)
+    love.graphics.arc( "line", self.pos.x, self.pos.y, 230, angle, angle + playerSize)
 end
