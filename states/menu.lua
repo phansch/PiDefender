@@ -8,6 +8,6 @@ end
 
 function state:keyreleased(key, code)
     if key == 'return' then
-        Gamestate.switch(game)
+        Gamestate.switch(Gamestate.game)
     end
 end

@@ -6,5 +6,8 @@ local game = require('states.game')
 
 function love.load( )
     Gamestate.registerEvents()
-    Gamestate.switch(Gamestate.menu)
+    Gamestate.switch(Gamestate.game)
+
+    winWidth = love.graphics.getWidth()
+    winHeight = love.graphics.getHeight()
 end
