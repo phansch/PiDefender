@@ -18,7 +18,6 @@ Story will be updated and refined during the month.
 
 ### Week 1 ###
 
- * Implement basic (triangle) enemies
  * Shooting with the cannon
  * Hide mouse and replace with custom player shape (the scout ship)
  * Refine cannon look
@@ -40,3 +39,4 @@ Story will be updated and refined during the month.
 
  * Basic cannon movement
  * Basic story
+ * Basic (triangle) enemies

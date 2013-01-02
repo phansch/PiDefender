@@ -13,7 +13,7 @@ Player = Class{function(self, circleRadius)
 end}
 Player.speed = 5
 
-function Player:update(dt, player)
+function Player:update(dt)
     self.direction = vector.new(love.mouse.getX(), love.mouse.getY())
 end
 
