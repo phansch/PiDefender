@@ -11,7 +11,6 @@ function EnemyTriangle:load()
     img = love.graphics.newImage("graphics/enemy1.png")
     self.imgWidth = img:getWidth()
     self.imgHeight = img:getHeight()
-    print(self.imgWidth)
 end
 
 function EnemyTriangle:update(dt)
@@ -22,7 +21,6 @@ end
 
 function EnemyTriangle:draw()
     centerVector = vector.new(winWidth/2, winHeight/2)
-    love.graphics.print(self.position:dist(centerVector), 50, 50)
     love.graphics.draw(img, self.position.x, self.position.y, self.angle, 1, 1, self.imgWidth/2, self.imgHeight/2)
 end
 

@@ -18,9 +18,9 @@ Story will be updated and refined during the month.
 
 ### Week 1 ###
 
- 
  * Shooting with the cannon
  * Refine cannon look
+ * make player shape dock on cannon when nearby
  * Add starfield background
  * Add more circles (more lines of defense)
  * Tweak enemy numbers
@@ -30,6 +30,7 @@ Story will be updated and refined during the month.
 
 ### Week 2, 3 and 4 ###
 
+ * Cycle through different cannon ammunition (projectiles, mines, aoe bombs)
  * Investigate possible boss mechanics and maybe win conditions
  * Add randomly moving enemy ships to start screen background
  * Investigate loot drops (Cannon upgrades, scout ship upgrades, spawning ally ships)
