@@ -10,7 +10,7 @@ triangles = {} --basic enemies
 hitpoints = 5
 
 function state:init()
-    Timer.addPeriodic(1, function() self.createFighter() end, 5)
+    Timer.addPeriodic(0.5, function() self.createFighter() end, 25)
 
     playerImg = love.graphics.newImage("graphics/hexagon.png")
 end
@@ -43,8 +43,25 @@ function state:draw()
 end
 
 function state:createFighter()
+    origin = math.random(0, 4)
+
+    -- there must be a better way to make them spawn from different edges
+    if origin == 1 then -- spawn from left side
+        y = math.random(-10, winHeight+10)
+        x = -10
+    elseif origin == 2 then -- spawn from right side
+        y = math.random(-10, winHeight+10)
+        x = winWidth + 10
+    elseif origin == 3 then
+        y = winHeight + 10
+        x = math.random(-10, winWidth+10)
+    elseif origin == 4 then -- spawn from top side
+        y = -10
+        x = math.random(-10, winWidth+10)
+    end
+
     love.graphics.print("Test", 100, 50)
-    enemyTri = EnemyTriangle(vector.new(50, 50))
+    enemyTri = EnemyTriangle(vector.new(x, y))
     enemyTri:load()
     table.insert(triangles, enemyTri)
 end

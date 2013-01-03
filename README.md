@@ -18,10 +18,9 @@ Story will be updated and refined during the month.
 
 ### Week 1 ###
 
+ 
  * Shooting with the cannon
- * Hide mouse and replace with custom player shape (the scout ship)
  * Refine cannon look
- * Health system. (Loose conditions)
  * Add starfield background
  * Add more circles (more lines of defense)
  * Tweak enemy numbers
@@ -37,6 +36,9 @@ Story will be updated and refined during the month.
 
 ## Done ##
 
- * Basic cannon movement
- * Basic story
- * Basic (triangle) enemies
+ * Basic cannon movement *(1)*
+ * Basic story *(1)*
+ * Basic (triangle) enemies *(2)*
+ * Show custom player shape (the scout ship) at mouse position *(3)*
+ * Health system. (Loose conditions) *(3)*
+ * Make enemies spawn at random locations (out of sight) *(3)*
