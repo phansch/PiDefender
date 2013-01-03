@@ -18,7 +18,6 @@ Story will be updated and refined during the month.
 
 ### Week 1 ###
 
- * Shooting with the cannon
  * Refine cannon look
  * make player shape dock on cannon when nearby
  * Add starfield background
@@ -43,3 +42,4 @@ Story will be updated and refined during the month.
  * Show custom player shape (the scout ship) at mouse position *(3)*
  * Health system. (Loose conditions) *(3)*
  * Make enemies spawn at random locations (out of sight) *(3)*
+ * Shooting with the cannon *(3)*
