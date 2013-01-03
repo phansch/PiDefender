@@ -7,6 +7,7 @@ require ".classes.EnemyTriangle"
 
 cannon = Cannon(150)
 triangles = {} --basic enemies
+hitpoints = 5
 
 function state:init()
     Timer.addPeriodic(1, function() self.createFighter() end, 5)
@@ -22,6 +23,7 @@ function state:update(dt)
             tri:update(dt)
         else
             table.remove(triangles, i)
+            Signals.emit('circle_hit')
         end
     end
 end
@@ -34,11 +36,19 @@ function state:draw()
     end
 
     love.graphics.draw(playerImg, love.mouse.getX()-16, love.mouse.getY()-16, 0)
+
+
+    love.graphics.print(hitpoints, winWidth/2, winHeight/2)
+
 end
 
 function state:createFighter()
-    love.graphics.print("Test", 100, 10)
+    love.graphics.print("Test", 100, 50)
     enemyTri = EnemyTriangle(vector.new(50, 50))
     enemyTri:load()
     table.insert(triangles, enemyTri)
 end
+
+Signals.register('circle_hit', function(i)
+    hitpoints = hitpoints - 1
+end)

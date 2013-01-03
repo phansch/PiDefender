@@ -1,5 +1,5 @@
 Gamestate = require "libraries.hump.gamestate"
-
+Signals = require "libraries.hump.signal"
 
 local menu = require('states.menu')
 local game = require('states.game')
