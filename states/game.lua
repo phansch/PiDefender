@@ -13,7 +13,7 @@ local triangles = {} --basic enemies
 local paused = false
 
 function state:init()
-    Timer.addPeriodic(0.25, function() self.createFighter() end, 1000)
+    Timer.addPeriodic(1, function() self.createFighter() end, 50)
 
     playerImg = love.graphics.newImage("graphics/hexagon.png")
 end
@@ -28,6 +28,15 @@ function state:update(dt)
         else
             table.remove(triangles, i)
             Signals.emit('circle_hit')
+        end
+    end
+
+    for i,shot in ipairs(Cannon.cannonShots) do
+        for j,triangle in ipairs(triangles) do
+            if shot:checkCollision(triangle) then
+                table.remove(triangles, j)
+                table.remove(Cannon.cannonShots, i)
+            end
         end
     end
 end

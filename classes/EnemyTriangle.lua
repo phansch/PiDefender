@@ -7,10 +7,10 @@ EnemyTriangle = Class{function(self, position)
 end}
 EnemyTriangle.speed = 2
 
+
 function EnemyTriangle:load()
     img = love.graphics.newImage("graphics/enemy1.png")
-    self.imgWidth = img:getWidth()
-    self.imgHeight = img:getHeight()
+    EnemyTriangle.imgSize = vector.new(img:getWidth(), img:getHeight())
 end
 
 function EnemyTriangle:update(dt)
@@ -21,7 +21,7 @@ end
 
 function EnemyTriangle:draw()
     centerVector = vector.new(winWidth/2, winHeight/2)
-    love.graphics.draw(img, self.position.x, self.position.y, self.angle, 1, 1, self.imgWidth/2, self.imgHeight/2)
+    love.graphics.draw(img, self.position.x, self.position.y, self.angle, 1, 1, EnemyTriangle.imgSize.x/2, EnemyTriangle.imgSize.y/2)
 end
 
 function EnemyTriangle:hasCollided(radius)

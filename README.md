@@ -33,6 +33,7 @@ Story will be updated and refined during the month.
  * Investigate possible boss mechanics and maybe win conditions
  * Add randomly moving enemy ships to start screen background
  * Investigate loot drops (Cannon upgrades, scout ship upgrades, spawning ally ships)
+ * Make cirlce diameter scale by used resolution
 
 ## Done ##
 
