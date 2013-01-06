@@ -5,10 +5,10 @@ My January entry for One Game A Month 2013
 
 ## Story ##
 
->Your solar system is under attack!  
+>Our empire is under attack!  
   
->Your scout ship is directing your people's only defense:  
->A giant defensive cannon that can obliterate dozens of ships at once.
+>Your scout ship is directing our people's only defense:  
+>A giant defensive cannon that is the only hope.
   
 >Try not to get hit by enemy fire while killing as many as possible.
 
@@ -20,8 +20,7 @@ Story will be updated and refined during the month.
 
 ### Week 1 ###
 
- * Music and sfx
- * Expand on story
+Done
 
 ### Week 2, 3 and 4 ###
 
@@ -49,4 +48,5 @@ Story will be updated and refined during the month.
  * Collision between player shape and enemies *(6)*
  * Menu screen and game pausing *(6)*
  * Pause when game lost focus *(6)*
- * Tweak enemy numbers
+ * Tweak enemy numbers *(6)*
+ * Music and sfx *(6)*

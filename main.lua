@@ -6,7 +6,13 @@ winWidth = love.graphics.getWidth()
 winHeight = love.graphics.getHeight()
 winCenter = vector.new(winWidth / 2, winHeight/2)
 
+
 music_background = love.audio.newSource("audio/Insistent.ogg")
+sfx_explosion = love.audio.newSource("audio/Explosion280.wav")
+sfx_pew = love.audio.newSource("audio/Laser_Shoot46.wav")
+
+sfx_pew:setVolume(0.1)
+sfx_explosion:setVolume(0.1)
 
 local menu = require('states.menu')
 local game = require('states.game')

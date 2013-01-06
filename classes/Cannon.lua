@@ -1,7 +1,7 @@
 Class = require ".libraries.hump.class"
 require ".classes.Shot"
 
-Cannon = Class{function(self) end}
+Cannon = Class{function(self) self.angle = 0 end}
 Cannon.speed = 5
 Cannon.circ = 0.6
 Cannon.radius = 4
@@ -46,6 +46,8 @@ end
 
 Signals.register('cannon_shoot', function(radius, angle)
     if Cannon.allowFire then
+        love.audio.play(sfx_pew)
+        love.audio.rewind(sfx_pew)
         Cannon:shoot(radius, angle)
     end
 end)
