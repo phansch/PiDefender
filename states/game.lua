@@ -82,7 +82,7 @@ end
 
 function state:keypressed(key)
     if key == ' ' then
-        Signals.emit('cannon_shoot', currentCircleRadius)
+        Signals.emit('cannon_shoot', cannon, currentCircleRadius)
     end
 end
 

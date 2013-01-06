@@ -14,4 +14,5 @@ end
 
 function love.update(dt)
     Timer.update(dt)
+    mousePos = vector(love.mouse.getX(), love.mouse.getY())
 end
