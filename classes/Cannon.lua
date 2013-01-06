@@ -1,25 +1,22 @@
 Class = require ".libraries.hump.class"
-vector = require ".libraries.hump.vector"
 require ".classes.Shot"
 
-Cannon = Class{function(self, circleRadius)
-    self.position = vector.new(winWidth / 2, winHeight/2)
-    self.circleRadius = circleRadius
-
-    self.direction = vector.new(love.mouse.getX(), love.mouse.getY())
-end}
+Cannon = Class{function(self) end}
 Cannon.speed = 5
-Cannon.circ = 0.5
+Cannon.circ = 0.6
 Cannon.radius = 4
 Cannon.cannonShots = {}
 
 function Cannon:update(dt, circleradius)
-    self.direction = vector(love.mouse.getX(), love.mouse.getY())
     self.circleRadius = circleradius
 
     -- Only update cannon direction when mouse is outside of circle
-    if(self.direction:dist(self.position) > self.circleRadius) then
-       self.angle = math.atan2(self.position.y-self.direction.y, self.position.x-self.direction.x) + math.pi - Cannon.circ/2
+    if(mousePos:dist(winCenter) > self.circleRadius + Cannon.radius) then
+       self.angle = math.atan2(winCenter.y-mousePos.y, winCenter.x-mousePos.x) + math.pi - Cannon.circ/2
+        --Also only allow shooting when mouse is outside of Circle
+        Cannon.allowFire = true
+    else
+        Cannon.allowFire = false
     end
 
     for i,shot in ipairs(Cannon.cannonShots) do
@@ -37,7 +34,7 @@ function Cannon:draw()
         shot:draw()
     end
     love.graphics.setColor(255, 100, 0)
-    love.graphics.arc("fill", self.position.x, self.position.y, self.circleRadius+Cannon.radius, self.angle, self.angle + Cannon.circ)
+    love.graphics.arc("fill", winCenter.x, winCenter.y, self.circleRadius+Cannon.radius, self.angle, self.angle + Cannon.circ)
     love.graphics.setColor(255, 255, 255)
 end
 
@@ -48,5 +45,7 @@ function Cannon:shoot(cannon, circleRadius)
 end
 
 Signals.register('cannon_shoot', function(radius, angle)
-    Cannon:shoot(radius, angle)
+    if Cannon.allowFire then
+        Cannon:shoot(radius, angle)
+    end
 end)

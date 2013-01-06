@@ -1,5 +1,4 @@
 Class = require ".libraries.hump.class"
-vector = require ".libraries.hump.vector"
 require ".libraries.helper"
 
 Shot = Class{function(self, targetVector, angle, radius)
@@ -33,7 +32,7 @@ end
 
 function Shot:checkCollision(triangleEnemy)
     local shot_pos2 = self.position + self.imgSize
-    local object2_pos = triangleEnemy.position + EnemyTriangle.imgSize
+    local object2_pos = triangleEnemy.position + triangleEnemy.imgSize
 
     return self.position.x < object2_pos.x and shot_pos2.x > triangleEnemy.position.x and
         self.position.y < triangleEnemy.position.y and shot_pos2.y > triangleEnemy.position.y

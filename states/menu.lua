@@ -3,7 +3,7 @@ local state = Gamestate.menu
 
 
 function state:draw()
-    love.graphics.print("Press Enter to continue", 10, 10)
+    love.graphics.print("Press Enter to continue", winWidth/2-100, winHeight/2-12)
 end
 
 function state:keyreleased(key, code)

@@ -1,5 +1,4 @@
 Class = require ".libraries.hump.class"
-vector = require ".libraries.hump.vector"
 
 EnemyTriangle = Class{function(self, position)
     self.position = position
@@ -10,8 +9,8 @@ EnemyTriangle.damage = 5
 
 
 function EnemyTriangle:load()
-    img = love.graphics.newImage("graphics/enemy1.png")
-    EnemyTriangle.imgSize = vector.new(img:getWidth(), img:getHeight())
+    self.img = love.graphics.newImage("graphics/enemy1.png")
+    self.imgSize = vector.new(self.img:getWidth(), self.img:getHeight())
 end
 
 function EnemyTriangle:update(dt)
@@ -22,7 +21,7 @@ end
 
 function EnemyTriangle:draw()
     centerVector = vector.new(winWidth/2, winHeight/2)
-    love.graphics.draw(img, self.position.x, self.position.y, self.angle, 1, 1, EnemyTriangle.imgSize.x/2, EnemyTriangle.imgSize.y/2)
+    love.graphics.draw(self.img, self.position.x, self.position.y, self.angle, 1, 1, self.imgSize.x/2, self.imgSize.y/2)
 end
 
 function EnemyTriangle:hasCollided(radius)

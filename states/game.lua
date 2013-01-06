@@ -6,10 +6,12 @@ require ".classes.Cannon"
 require ".classes.EnemyTriangle"
 require ".classes.Stars"
 require ".classes.ParticleSystems"
+require ".classes.Player"
 
-local cannon = Cannon(currentCircleRadius)
+local cannon = Cannon()
 local pSystems = ParticleSystems()
 local stars = Stars()
+local player = Player()
 
 local hitpoints = 500
 local currentCircleRadius = hitpoints/6
@@ -19,7 +21,7 @@ local paused = false
 function state:init()
     Timer.addPeriodic(1, function() self.createFighter() end, 50)
 
-    playerImg = love.graphics.newImage("graphics/hexagon.png")
+    player:load()
 
     stars:load()
     pSystems:initTriangleExplosion()
@@ -28,7 +30,11 @@ end
 
 function state:update(dt)
     currentCircleRadius = hitpoints/6
-    cannon:update(dt, currentCircleRadius)
+
+    if Player.enabled then
+        cannon:update(dt, currentCircleRadius)
+        player:update()
+    end
 
     for i,triangle in ipairs(triangles) do
         if not triangle:hasCollided(currentCircleRadius) then
@@ -39,6 +45,7 @@ function state:update(dt)
         end
     end
 
+    -- shot <-> triangle collision
     for i,shot in ipairs(Cannon.cannonShots) do
         for j,triangle in ipairs(triangles) do
             if shot:checkCollision(triangle) then
@@ -48,6 +55,16 @@ function state:update(dt)
             end
         end
     end
+
+    -- triangle <-> player collision
+    for i,triangle in ipairs(triangles) do
+        if player:hasCollided(triangle) then
+            Signals.emit('triangle_destroyed', triangle.position)
+            Signals.emit('player_destroyed', player.position)
+            table.remove(triangles, i)
+        end
+    end
+
 
     pSystems:update(dt)
 end
@@ -61,14 +78,14 @@ function state:draw()
         triangle:draw()
     end
 
-    love.graphics.draw(playerImg, love.mouse.getX()-16, love.mouse.getY()-16, 0)
+    player:draw()
 
     -- draw hitpoints
     love.graphics.setColor(0, 0, 0)
     love.graphics.setNewFont(24)
     love.graphics.print(hitpoints, winWidth/2, winHeight/2)
     love.graphics.setColor(255, 255, 255)
-
+    love.graphics.setNewFont(12)
     pSystems:draw()
 end
 
@@ -101,6 +118,18 @@ function state:keypressed(key)
     end
 end
 
+function state:keyreleased(key)
+    if key == 'escape' then
+        Gamestate.switch(Gamestate.menu)
+    end
+end
+
+function state:focus(f)
+    if not f then
+        Gamestate.switch(Gamestate.menu)
+    end
+end
+
 Signals.register('circle_hit', function(position)
     pSystems[2]:setPosition(position.x, position.y)
     pSystems[2]:start()
@@ -113,5 +142,9 @@ Signals.register('triangle_destroyed', function(position)
 end)
 
 Signals.register('player_destroyed', function(position)
-
+    pSystems[2]:setPosition(position.x, position.y)
+    pSystems[2]:start()
+    Player.lives = Player.lives - 1
+    Player.enabled = false
+    Timer.add(5, function() Player.enabled = true end)
 end)

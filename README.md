@@ -16,19 +16,17 @@ Story will be updated and refined during the month.
 
 ## To-do ##
 
+[Bugs](https://github.com/phansch/PiDefender/issues)
+
 ### Week 1 ###
 
- 
- * Collision between player shape and enemies
  * Add more circles (more lines of defense)
  * Tweak enemy numbers
- * Menu screen and game pausing
  * Music and sfx
  * Expand on story
  * Add different enemy types
 
 ### Week 2, 3 and 4 ###
-
 
  * Cycle through different cannon ammunition (projectiles, mines, aoe bombs)
  * make player shape dock on cannon when nearby
@@ -50,3 +48,6 @@ Story will be updated and refined during the month.
  * Refine cannon look *(6)*
  * Add starfield background *(6)*
  * gfx for explosions *(6)*
+ * Collision between player shape and enemies *(6)*
+ * Menu screen and game pausing *(6)*
+ * Pause when game lost focus *(6)*
