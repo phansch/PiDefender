@@ -43,14 +43,18 @@ end
 
 function state:draw()
     cannon:draw()
-    love.graphics.circle("line", winWidth/2, winHeight/2, currentCircleRadius, 360)
+    love.graphics.circle("fill", winWidth/2, winHeight/2, currentCircleRadius, 360)
     for i,tri in ipairs(triangles) do
         tri:draw()
     end
 
     love.graphics.draw(playerImg, love.mouse.getX()-16, love.mouse.getY()-16, 0)
 
+    -- draw hitpoints
+    love.graphics.setColor(0, 0, 0)
+    love.graphics.setNewFont(24)
     love.graphics.print(hitpoints, winWidth/2, winHeight/2)
+    love.graphics.setColor(255, 255, 255)
 end
 
 function state:createFighter()
@@ -78,10 +82,10 @@ end
 
 function state:keypressed(key)
     if key == ' ' then
-        Signals.emit('cannon_shoot')
+        Signals.emit('cannon_shoot', currentCircleRadius)
     end
 end
 
-Signals.register('circle_hit', function(i)
+Signals.register('circle_hit', function()
     hitpoints = hitpoints - 1
 end)
