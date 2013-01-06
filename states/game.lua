@@ -5,11 +5,14 @@ Timer = require 'libraries.hump.timer'
 require ".classes.Cannon"
 require ".classes.EnemyTriangle"
 require ".classes.Stars"
+require ".classes.ParticleSystems"
 
-local hitpoints = 1000
-local currentCircleRadius = hitpoints/6
 local cannon = Cannon(currentCircleRadius)
+local pSystems = ParticleSystems()
 local stars = Stars()
+
+local hitpoints = 500
+local currentCircleRadius = hitpoints/6
 local triangles = {} --basic enemies
 local paused = false
 
@@ -19,18 +22,19 @@ function state:init()
     playerImg = love.graphics.newImage("graphics/hexagon.png")
 
     stars:load()
+    pSystems:initExplosion()
 end
 
 function state:update(dt)
     currentCircleRadius = hitpoints/6
     cannon:update(dt, currentCircleRadius)
 
-    for i,tri in ipairs(triangles) do
-        if not tri:hasCollided(currentCircleRadius) then
-            tri:update(dt)
+    for i,triangle in ipairs(triangles) do
+        if not triangle:hasCollided(currentCircleRadius) then
+            triangle:update(dt)
         else
+            Signals.emit('circle_hit', triangle.position)
             table.remove(triangles, i)
-            Signals.emit('circle_hit')
         end
     end
 
@@ -42,14 +46,17 @@ function state:update(dt)
             end
         end
     end
+
+    pSystems:update(dt)
 end
 
 function state:draw()
     stars:draw()
     cannon:draw()
     love.graphics.circle("fill", winWidth/2, winHeight/2, currentCircleRadius, 360)
-    for i,tri in ipairs(triangles) do
-        tri:draw()
+
+    for i,triangle in ipairs(triangles) do
+        triangle:draw()
     end
 
     love.graphics.draw(playerImg, love.mouse.getX()-16, love.mouse.getY()-16, 0)
@@ -59,6 +66,8 @@ function state:draw()
     love.graphics.setNewFont(24)
     love.graphics.print(hitpoints, winWidth/2, winHeight/2)
     love.graphics.setColor(255, 255, 255)
+
+    pSystems:draw()
 end
 
 function state:createFighter()
@@ -90,6 +99,8 @@ function state:keypressed(key)
     end
 end
 
-Signals.register('circle_hit', function()
-    hitpoints = hitpoints - 1
+Signals.register('circle_hit', function(position)
+    pSystems[1]:setPosition(position.x, position.y)
+    pSystems[1]:start()
+    hitpoints = hitpoints - EnemyTriangle.damage
 end)
