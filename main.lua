@@ -33,4 +33,8 @@ function love.keypressed(key)
     if key == 'escape' then
         love.event.quit()
     end
+    if key == 'print' or key == 'f10' then
+        local s = love.graphics.newScreenshot()
+        s:encode("pic.jpg")
+    end
 end
