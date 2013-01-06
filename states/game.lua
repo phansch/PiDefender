@@ -26,8 +26,10 @@ function state:init()
     pSystems:initCircleHit()
 end
 
-function state:enter()
-    self:startGame()
+function state:enter(previous)
+    if previous == Gamestate.menu or previous == Gamestate.gameover then
+        self:startGame()
+    end
 end
 
 function state:update(dt)
@@ -149,14 +151,14 @@ function state:keypressed(key)
 end
 
 function state:keyreleased(key)
-    if key == 'F10' then
-        Gamestate.switch(Gamestate.menu)
+    if key == 'p' then
+        Gamestate.switch(Gamestate.pause)
     end
 end
 
 function state:focus(f)
     if not f then
-        Gamestate.switch(Gamestate.menu)
+        Gamestate.switch(Gamestate.pause)
     end
 end
 
@@ -180,6 +182,8 @@ function state:startGame()
 
     --allow cannon fire
     Cannon.allowFire = true
+
+    tCount = 0
 end
 
 Signals.register('circle_hit', function(position)

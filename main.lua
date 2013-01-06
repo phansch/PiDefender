@@ -16,6 +16,7 @@ sfx_explosion:setVolume(0.1)
 
 local menu = require('states.menu')
 local game = require('states.game')
+local pause = require('states.pause')
 local gameover = require('states.gameover')
 
 function love.load()
