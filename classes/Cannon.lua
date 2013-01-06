@@ -10,9 +10,9 @@ Cannon.cannonShots = {}
 function Cannon:update(dt, circleradius)
     self.circleRadius = circleradius
 
-    -- Only update cannon direction when mouse is outside of circle
-    if(mousePos:dist(winCenter) > self.circleRadius + Cannon.radius) then
-       self.angle = math.atan2(winCenter.y-mousePos.y, winCenter.x-mousePos.x) + math.pi - Cannon.circ/2
+    -- Only update cannon direction when mouse is outside of circle and player is enabled
+    if(mousePos:dist(winCenter) > self.circleRadius + Cannon.radius) and Player.enabled then
+        self.angle = math.atan2(winCenter.y-mousePos.y, winCenter.x-mousePos.x) + math.pi - Cannon.circ/2
         --Also only allow shooting when mouse is outside of Circle
         Cannon.allowFire = true
     else
@@ -33,9 +33,9 @@ function Cannon:draw()
     for i,shot in ipairs(Cannon.cannonShots) do
         shot:draw()
     end
-    love.graphics.setColor(255, 100, 0)
+    love.graphics.setColor(255, 255, 255, 100)
     love.graphics.arc("fill", winCenter.x, winCenter.y, self.circleRadius+Cannon.radius, self.angle, self.angle + Cannon.circ)
-    love.graphics.setColor(255, 255, 255)
+    love.graphics.setColor(255, 255, 255, 255)
 end
 
 function Cannon:shoot(cannon, circleRadius)

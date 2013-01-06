@@ -1,9 +1,12 @@
 Gamestate.menu = Gamestate.new()
 local state = Gamestate.menu
 
+function state:init()
+    love.audio.play(music_background)
+end
 
 function state:draw()
-    love.graphics.print("Press Enter to continue", winWidth/2-100, winHeight/2-12)
+    love.graphics.print("Press [space] to continue", winWidth/2-100, winHeight/2-12)
 end
 
 function state:keyreleased(key, code)

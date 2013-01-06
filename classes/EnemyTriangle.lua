@@ -5,7 +5,7 @@ EnemyTriangle = Class{function(self, position)
     self.targetVector = vector.new(winWidth/2, winHeight/2)
 end}
 EnemyTriangle.speed = 2
-EnemyTriangle.damage = 5
+EnemyTriangle.damage = 10
 
 
 function EnemyTriangle:load()

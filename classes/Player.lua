@@ -5,6 +5,7 @@ Player = Class{function(self)
 end}
 Player.lives = 5
 Player.enabled = true
+Player.score = 0
 
 function Player:load()
     self.img = love.graphics.newImage("graphics/hexagon.png")
@@ -22,6 +23,10 @@ function Player:draw()
 
     -- draw player live count
     love.graphics.print("Lives: "..Player.lives, 10, winHeight-20)
+
+    --draw player score
+    love.graphics.print("Score: "..Player.score, 145, winHeight-20)
+
 end
 
 function Player:hasCollided(triangleEnemy)

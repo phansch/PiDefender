@@ -16,23 +16,52 @@ local player = Player()
 local hitpoints = 500
 local currentCircleRadius = hitpoints/6
 local triangles = {} --basic enemies
-local paused = false
+local tCount = 0
 
 function state:init()
-    Timer.addPeriodic(1, function() self.createFighter() end, 50)
-
     player:load()
-
     stars:load()
+
     pSystems:initTriangleExplosion()
     pSystems:initCircleHit()
+end
+
+function state:enter()
+    self:startGame()
 end
 
 function state:update(dt)
     currentCircleRadius = hitpoints/6
 
+    cannon:update(dt, currentCircleRadius)
+
+    -- add fighters
+    if tCount < 7 then
+        if Player.score <= 100 then
+            minSpawn = 3
+            maxSpawn = 5
+            period = 2
+        elseif Player.score > 100 then
+            minSpawn = 4
+            maxSpawn = 8
+            period = 1.5
+        elseif Player.score > 250 then
+            minSpawn = 6
+            maxSpawn = 12
+            period = 1
+        elseif Player.score > 300 then
+            minSpawn = 12
+            maxSpawn = 15
+            period = 0.25
+        end
+
+        local randomAdd = math.random(minSpawn, maxSpawn)
+
+        Timer.addPeriodic(period, function() self:createFighter() end, randomAdd)
+        tCount = tCount + randomAdd
+    end
+
     if Player.enabled then
-        cannon:update(dt, currentCircleRadius)
         player:update()
     end
 
@@ -41,6 +70,7 @@ function state:update(dt)
             triangle:update(dt)
         else
             Signals.emit('circle_hit', triangle.position)
+            Signals.emit('triangle_destroyed', triangle.position)
             table.remove(triangles, i)
         end
     end
@@ -50,6 +80,7 @@ function state:update(dt)
         for j,triangle in ipairs(triangles) do
             if shot:checkCollision(triangle) then
                 Signals.emit('triangle_destroyed', triangle.position)
+                Player.score = Player.score + 5
                 table.remove(triangles, j)
                 table.remove(Cannon.cannonShots, i)
             end
@@ -65,6 +96,9 @@ function state:update(dt)
         end
     end
 
+    if hitpoints <= 0 or Player.lives == 0 then
+        Gamestate.switch(Gamestate.gameover)
+    end
 
     pSystems:update(dt)
 end
@@ -81,11 +115,7 @@ function state:draw()
     player:draw()
 
     -- draw hitpoints
-    love.graphics.setColor(0, 0, 0)
-    love.graphics.setNewFont(24)
-    love.graphics.print(hitpoints, winWidth/2, winHeight/2)
-    love.graphics.setColor(255, 255, 255)
-    love.graphics.setNewFont(12)
+    love.graphics.print("HP: "..hitpoints, 80, winHeight-20)
     pSystems:draw()
 end
 
@@ -119,7 +149,7 @@ function state:keypressed(key)
 end
 
 function state:keyreleased(key)
-    if key == 'escape' then
+    if key == 'F10' then
         Gamestate.switch(Gamestate.menu)
     end
 end
@@ -128,6 +158,28 @@ function state:focus(f)
     if not f then
         Gamestate.switch(Gamestate.menu)
     end
+end
+
+function state:startGame()
+    --remove enemies
+    for k in pairs (triangles) do
+        triangles [k] = nil
+    end
+
+    --clear timers
+    Timer.clear()
+
+    --reset hitpoints
+    hitpoints = 500
+
+    --reset player lives
+    Player.lives = 5
+
+    --draw player
+    Player.enabled = true
+
+    --allow cannon fire
+    Cannon.allowFire = true
 end
 
 Signals.register('circle_hit', function(position)
@@ -139,6 +191,8 @@ end)
 Signals.register('triangle_destroyed', function(position)
     pSystems[1]:setPosition(position.x, position.y)
     pSystems[1]:start()
+
+    tCount = tCount - 1
 end)
 
 Signals.register('player_destroyed', function(position)
@@ -146,5 +200,9 @@ Signals.register('player_destroyed', function(position)
     pSystems[2]:start()
     Player.lives = Player.lives - 1
     Player.enabled = false
-    Timer.add(5, function() Player.enabled = true end)
+    Cannon.allowFire = false
+    Timer.add(5, function()
+        Player.enabled = true
+        Cannon.allowFire = true
+    end)
 end)
