@@ -6,7 +6,7 @@ function state:draw()
 end
 
 function state:keyreleased(key)
-    if key == 'return' then
+    if key == ' ' then
         Gamestate.switch(Gamestate.game)
     end
 end

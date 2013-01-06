@@ -14,6 +14,8 @@ My January entry for One Game A Month 2013
 
 Story will be updated and refined during the month.
 
+## Credits ##
+
 ## To-do ##
 
 [Bugs](https://github.com/phansch/PiDefender/issues)
