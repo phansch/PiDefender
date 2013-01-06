@@ -18,7 +18,8 @@ Story will be updated and refined during the month.
 
 ### Week 1 ###
 
- * Add starfield background
+ * gfx for explosions
+ * Collision between player shape and enemies
  * Add more circles (more lines of defense)
  * Tweak enemy numbers
  * Menu screen and game pausing
@@ -47,3 +48,4 @@ Story will be updated and refined during the month.
  * Shooting with the cannon *(3)*
  * Fixes for shooting (4, 6)
  * Refine cannon look (6)
+ * Add starfield background (6)

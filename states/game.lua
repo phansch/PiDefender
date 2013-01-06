@@ -4,18 +4,21 @@ local state = Gamestate.game
 Timer = require 'libraries.hump.timer'
 require ".classes.Cannon"
 require ".classes.EnemyTriangle"
+require ".classes.Stars"
 
 local hitpoints = 1000
 local currentCircleRadius = hitpoints/6
 local cannon = Cannon(currentCircleRadius)
+local stars = Stars()
 local triangles = {} --basic enemies
-
 local paused = false
 
 function state:init()
     Timer.addPeriodic(1, function() self.createFighter() end, 50)
 
     playerImg = love.graphics.newImage("graphics/hexagon.png")
+
+    stars:load()
 end
 
 function state:update(dt)
@@ -42,6 +45,7 @@ function state:update(dt)
 end
 
 function state:draw()
+    stars:draw()
     cannon:draw()
     love.graphics.circle("fill", winWidth/2, winHeight/2, currentCircleRadius, 360)
     for i,tri in ipairs(triangles) do
