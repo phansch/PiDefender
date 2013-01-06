@@ -22,7 +22,8 @@ function state:init()
     playerImg = love.graphics.newImage("graphics/hexagon.png")
 
     stars:load()
-    pSystems:initExplosion()
+    pSystems:initTriangleExplosion()
+    pSystems:initCircleHit()
 end
 
 function state:update(dt)
@@ -41,6 +42,7 @@ function state:update(dt)
     for i,shot in ipairs(Cannon.cannonShots) do
         for j,triangle in ipairs(triangles) do
             if shot:checkCollision(triangle) then
+                Signals.emit('triangle_destroyed', triangle.position)
                 table.remove(triangles, j)
                 table.remove(Cannon.cannonShots, i)
             end
@@ -100,7 +102,16 @@ function state:keypressed(key)
 end
 
 Signals.register('circle_hit', function(position)
+    pSystems[2]:setPosition(position.x, position.y)
+    pSystems[2]:start()
+    hitpoints = hitpoints - EnemyTriangle.damage
+end)
+
+Signals.register('triangle_destroyed', function(position)
     pSystems[1]:setPosition(position.x, position.y)
     pSystems[1]:start()
-    hitpoints = hitpoints - EnemyTriangle.damage
+end)
+
+Signals.register('player_destroyed', function(position)
+
 end)

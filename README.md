@@ -18,7 +18,7 @@ Story will be updated and refined during the month.
 
 ### Week 1 ###
 
- * gfx for explosions
+ 
  * Collision between player shape and enemies
  * Add more circles (more lines of defense)
  * Tweak enemy numbers
@@ -46,6 +46,7 @@ Story will be updated and refined during the month.
  * Health system. (Loose conditions) *(3)*
  * Make enemies spawn at random locations (out of sight) *(3)*
  * Shooting with the cannon *(3)*
- * Fixes for shooting (4, 6)
- * Refine cannon look (6)
- * Add starfield background (6)
+ * Fixes for shooting *(4, 6)*
+ * Refine cannon look *(6)*
+ * Add starfield background *(6)*
+ * gfx for explosions *(6)*

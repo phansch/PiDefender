@@ -24,6 +24,8 @@ function Cannon:update(dt, circleradius)
 
     for i,shot in ipairs(Cannon.cannonShots) do
         shot:update(dt)
+
+        -- remove shot when out of bounds
         if not shot:isInBounds() then
             table.remove(Cannon.cannonShots, i)
         end
