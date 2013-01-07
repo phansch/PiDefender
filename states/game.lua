@@ -16,11 +16,15 @@ local player = Player()
 local hitpoints = 500
 local currentCircleRadius = hitpoints/6
 local triangles = {} --basic enemies
+local Planet = {}
 local tCount = 0
 
 function state:init()
     player:load()
     stars:load()
+
+    Planet.img = love.graphics.newImage("graphics/planet.png")
+    Planet.imgSize = vector.new(Planet.img:getWidth(), Planet.img:getHeight())
 
     pSystems:initTriangleExplosion()
     pSystems:initCircleHit()
@@ -108,7 +112,8 @@ end
 function state:draw()
     stars:draw()
     cannon:draw()
-    love.graphics.circle("fill", winWidth/2, winHeight/2, currentCircleRadius, 360)
+    love.graphics.draw(Planet.img, winWidth/2-Planet.imgSize.x/2, winHeight/2-Planet.imgSize.y/2, 0)
+    --love.graphics.circle("fill", winWidth/2, winHeight/2, currentCircleRadius, 360)
 
     for i,triangle in ipairs(triangles) do
         triangle:draw()

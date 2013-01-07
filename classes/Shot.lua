@@ -1,5 +1,5 @@
 Class = require ".libraries.hump.class"
-require ".libraries.helper"
+require ".libraries.Helper"
 
 Shot = Class{function(self, targetVector, angle, radius)
     self.position = getCirclePoint(vector.new(winWidth/2, winHeight/2), angle, radius)
