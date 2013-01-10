@@ -28,11 +28,6 @@ Done
 
  * Add different enemy types
  * Cycle through different cannon ammunition (projectiles, mines, aoe bombs)
- * make player shape dock on cannon when nearby
- * Investigate possible boss mechanics and maybe win conditions
- * Add randomly moving enemy ships to start screen background
- * Investigate loot drops (Cannon upgrades, scout ship upgrades, spawning ally ships)
- * Make cirlce diameter scale by used resolution
 
 ## Done ##
 
