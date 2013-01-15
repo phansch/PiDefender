@@ -201,8 +201,8 @@ Signals.register('triangle_destroyed', function(position)
     pSystems[1]:setPosition(position.x, position.y)
     pSystems[1]:start()
 
-    love.audio.play(sfx_explosion)
-    love.audio.rewind(sfx_explosion)
+    --love.audio.play(sfx_explosion)
+    --love.audio.rewind(sfx_explosion)
 
     tCount = tCount - 1
 end)
@@ -211,8 +211,8 @@ Signals.register('player_destroyed', function(position)
     pSystems[2]:setPosition(position.x, position.y)
     pSystems[2]:start()
 
-    love.audio.play(sfx_explosion)
-    love.audio.rewind(sfx_explosion)
+    --love.audio.play(sfx_explosion)
+    --love.audio.rewind(sfx_explosion)
 
     Player.lives = Player.lives - 1
     Player.enabled = false

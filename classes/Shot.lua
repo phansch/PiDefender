@@ -11,8 +11,7 @@ end}
 Shot.speed = 10
 
 function Shot:load()
-    Shot.img = love.graphics.newImage("graphics/projectile.png")
-    Shot.imgSize = vector.new(Shot.img:getWidth(), Shot.img:getHeight())
+
 end
 
 function Shot:update(dt)
@@ -23,7 +22,7 @@ function Shot:update(dt)
 end
 
 function Shot:draw()
-    love.graphics.draw(Shot.img, self.position:unpack())
+    love.graphics.draw(Shotimg, self.position:unpack())
 end
 
 function Shot:isInBounds()
@@ -31,7 +30,7 @@ function Shot:isInBounds()
 end
 
 function Shot:checkCollision(triangleEnemy)
-    local shot_pos2 = self.position + self.imgSize
+    local shot_pos2 = self.position + ShotimgSize
     local object2_pos = triangleEnemy.position + triangleEnemy.imgSize
 
     return self.position.x < object2_pos.x and shot_pos2.x > triangleEnemy.position.x and

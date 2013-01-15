@@ -40,14 +40,14 @@ end
 
 function Cannon:shoot(cannon, circleRadius)
     shot = Shot(mousePos, cannon.angle + Cannon.circ/2, circleRadius + Cannon.radius)
-    shot:load()
+
     table.insert(Cannon.cannonShots, shot)
 end
 
 Signals.register('cannon_shoot', function(radius, angle)
     if Cannon.allowFire then
-        love.audio.play(sfx_pew)
-        love.audio.rewind(sfx_pew)
+        --love.audio.play(sfx_pew)
+        --love.audio.rewind(sfx_pew)
         Cannon:shoot(radius, angle)
     end
 end)

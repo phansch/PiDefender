@@ -11,6 +11,9 @@ music_background = love.audio.newSource("audio/Insistent.ogg")
 sfx_explosion = love.audio.newSource("audio/Explosion280.wav")
 sfx_pew = love.audio.newSource("audio/Laser_Shoot46.wav")
 
+Shotimg = love.graphics.newImage("graphics/projectile.png")
+ShotimgSize = vector.new(Shotimg:getWidth(), Shotimg:getHeight())
+
 sfx_pew:setVolume(0.1)
 sfx_explosion:setVolume(0.1)
 
