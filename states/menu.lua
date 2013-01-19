@@ -8,14 +8,17 @@ state.text = "Thanks for trying out the game.\n\n"
 
 function state:init()
     love.audio.play(music_background)
-
+    Introimg = love.graphics.newImage("graphics/intro.png")
+    IntroimgSize = vector.new(Introimg:getWidth(), Introimg:getHeight())
 end
 
 function state:draw()
-    love.graphics.printf(self.text, winWidth/2-200, winHeight/2-200, 400, "center")
+    --love.graphics.printf(self.text, winWidth/2-200, winHeight/2-200, 400, "center")
+
+    love.graphics.draw(Introimg, winWidth/2-IntroimgSize.x/2, winHeight/2-IntroimgSize.y/2, 0)
 
     love.graphics.setNewFont(11)
-    love.graphics.print("Pi Defender Alpha. Submit bugs at http://github.com/phansch/PiDefender.", 15, winHeight-20)
+    love.graphics.print("Work in progress. Feel free to submit bugs at http://github.com/phansch/PiDefender.", 15, winHeight-20)
     love.graphics.setNewFont(12)
 end
 

@@ -22,11 +22,12 @@ function Player:draw()
     end
 
     -- draw player live count
-    love.graphics.print("Lives: "..Player.lives, 10, winHeight-20)
+    for i=1,Player.lives do
+        love.graphics.draw(self.img, 10 * i * 3.5, winHeight-40)
+    end
 
     --draw player score
-    love.graphics.print("Score: "..Player.score, 145, winHeight-20)
-
+    love.graphics.print("Score: "..Player.score, 250, winHeight-20)
 end
 
 function Player:hasCollided(triangleEnemy)
