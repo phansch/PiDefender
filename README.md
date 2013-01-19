@@ -24,10 +24,25 @@ Story will be updated and refined during the month.
 
 Done
 
-### Week 2, 3 and 4 ###
+### Week 2 ###
 
- * Add different enemy types
- * Cycle through different cannon ammunition (projectiles, mines, aoe bombs)
+Done
+
+### Week 3 ###
+
+Making the game more difficult
+
+ * A new enemy: The strategic bomber.
+   * Circles the planet, drops bombs that deal massive damage
+ * Player can get killed by his own fire.
+
+Stuff
+
+ * Fix game crashing on Linux
+ * Delay the game-over screen for 3 seconds
+
+### Week 4 ###
+ * New cannon ammo: AOE bombs
 
 ## Done ##
 

@@ -2,27 +2,30 @@ Class = require ".libraries.hump.class"
 require ".libraries.Helper"
 
 Shot = Class{function(self, targetVector, angle, radius)
-    self.position = getCirclePoint(vector.new(winWidth/2, winHeight/2), angle, radius)
-    self.acceleration = vector.new(1, 1)
+    self.angle = angle
+    self.targetVector = targetVector
+    self.position = getCirclePoint(vector.new(winWidth/2, winHeight/2), self.angle, radius)
+    self.acceleration = vector.new(0.1, 0.1)
     self.velocity = vector.new(0, 0)
     self.direction = vector.new(0,0)
-    distance = self.position - targetVector
+    self.distance = self.position - self.targetVector
 end}
-Shot.speed = 10
+Shot.speed = 5
 
 function Shot:load()
 
 end
 
 function Shot:update(dt)
-    self.direction = self.direction + distance
+    self.direction = self.direction + self.distance
     self.acceleration = self.direction:normalized()
     self.velocity = self.velocity + self.acceleration * dt * -1 * Shot.speed
     self.position = self.position + self.velocity
+    self.angle = math.atan2(winCenter.y-self.targetVector.y, winCenter.x-self.targetVector.x) + math.pi
 end
 
 function Shot:draw()
-    love.graphics.draw(Shotimg, self.position:unpack())
+    love.graphics.draw(Shotimg, self.position.x, self.position.y, self.angle + math.pi/2, 2, 2)
 end
 
 function Shot:isInBounds()

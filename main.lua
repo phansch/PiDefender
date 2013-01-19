@@ -11,7 +11,7 @@ music_background = love.audio.newSource("audio/Insistent.ogg")
 sfx_explosion = love.audio.newSource("audio/Explosion280.wav")
 sfx_pew = love.audio.newSource("audio/Laser_Shoot46.wav")
 
-Shotimg = love.graphics.newImage("graphics/projectile.png")
+Shotimg = love.graphics.newImage("graphics/bullet.png")
 ShotimgSize = vector.new(Shotimg:getWidth(), Shotimg:getHeight())
 
 sfx_pew:setVolume(0.1)
@@ -38,6 +38,7 @@ function love.keypressed(key)
     end
     if key == 'print' or key == 'f10' then
         local s = love.graphics.newScreenshot()
-        s:encode("pic.jpg")
+        print("Screenshot taken...")
+        s:encode("pic1.png")
     end
 end

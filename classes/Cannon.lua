@@ -34,14 +34,20 @@ function Cannon:draw()
         shot:draw()
     end
     love.graphics.setColor(255, 255, 255, 100)
-    love.graphics.arc("fill", winCenter.x, winCenter.y, self.circleRadius+Cannon.radius, self.angle, self.angle + Cannon.circ)
+    love.graphics.arc("line", winCenter.x, winCenter.y, self.circleRadius+Cannon.radius, self.angle, self.angle + Cannon.circ)
     love.graphics.setColor(255, 255, 255, 255)
+    local cannonCenter = vector.new(getCirclePoint(winCenter, self.angle + Cannon.circ/2, self.circleRadius).x, getCirclePoint(winCenter, self.angle + Cannon.circ/2, self.circleRadius).y)
 end
 
 function Cannon:shoot(cannon, circleRadius)
-    shot = Shot(mousePos, cannon.angle + Cannon.circ/2, circleRadius + Cannon.radius)
-
+    shot = Shot(mousePos, cannon.angle + Cannon.circ / 7, circleRadius + Cannon.radius)
     table.insert(Cannon.cannonShots, shot)
+
+    shot2 = Shot(mousePos, cannon.angle + Cannon.circ/2, circleRadius + Cannon.radius)
+    table.insert(Cannon.cannonShots, shot2)
+
+    shot3 = Shot(mousePos, cannon.angle + Cannon.circ, circleRadius + Cannon.radius)
+    table.insert(Cannon.cannonShots, shot3)
 end
 
 Signals.register('cannon_shoot', function(radius, angle)

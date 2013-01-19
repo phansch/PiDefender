@@ -13,8 +13,9 @@ local pSystems = ParticleSystems()
 local stars = Stars()
 local player = Player()
 
-local hitpoints = 500
-local currentCircleRadius = hitpoints/6
+local hitpoints, hitpointsMax = 500, 500
+local hitpointsPC = 100
+local circleRadius = 150
 local triangles = {} --basic enemies
 local Planet = {}
 local tCount = 0
@@ -31,15 +32,15 @@ function state:init()
 end
 
 function state:enter(previous)
+    love.mouse.setVisible(false)
     if previous == Gamestate.menu or previous == Gamestate.gameover then
         self:startGame()
     end
 end
 
 function state:update(dt)
-    currentCircleRadius = hitpoints/6
-
-    cannon:update(dt, currentCircleRadius)
+    cannon:update(dt, circleRadius)
+    hitpointsPC = 100 / hitpointsMax * hitpoints
 
     -- add fighters
     if tCount < 7 then
@@ -72,7 +73,7 @@ function state:update(dt)
     end
 
     for i,triangle in ipairs(triangles) do
-        if not triangle:hasCollided(currentCircleRadius) then
+        if not triangle:hasCollided(circleRadius) then
             triangle:update(dt)
         else
             Signals.emit('circle_hit', triangle.position)
@@ -113,7 +114,7 @@ function state:draw()
     stars:draw()
     cannon:draw()
     love.graphics.draw(Planet.img, winWidth/2-Planet.imgSize.x/2, winHeight/2-Planet.imgSize.y/2, 0)
-    --love.graphics.circle("fill", winWidth/2, winHeight/2, currentCircleRadius, 360)
+
 
     for i,triangle in ipairs(triangles) do
         triangle:draw()
@@ -122,7 +123,17 @@ function state:draw()
     player:draw()
 
     -- draw hitpoints
-    love.graphics.print("HP: "..hitpoints, 80, winHeight-20)
+    love.graphics.print(hitpointsPC.."%", winWidth/2-12, winHeight/2-135)
+
+    love.graphics.setLineWidth(10)
+    love.graphics.setColor(255, 255, 255, 200)
+    love.graphics.circle("line", winWidth/2, winHeight/2, circleRadius, 360)
+    love.graphics.setColor(255, 9, 0)
+    --print(hitpointsPC)
+    --drawArc(winWidth/2, winHeight/2, circleRadius-4, math.pi/2.5, math.pi/1.5, 50)
+
+    love.graphics.setLineWidth(1)
+    love.graphics.setColor(255, 255, 255)
     pSystems:draw()
 end
 
@@ -151,7 +162,7 @@ end
 
 function state:keypressed(key)
     if key == ' ' then
-        Signals.emit('cannon_shoot', cannon, currentCircleRadius)
+        Signals.emit('cannon_shoot', cannon, circleRadius)
     end
 end
 
@@ -217,8 +228,10 @@ Signals.register('player_destroyed', function(position)
     Player.lives = Player.lives - 1
     Player.enabled = false
     Cannon.allowFire = false
+    love.mouse.setVisible(true)
     Timer.add(5, function()
         Player.enabled = true
         Cannon.allowFire = true
+        love.mouse.setVisible(false)
     end)
 end)
