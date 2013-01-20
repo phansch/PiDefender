@@ -24,7 +24,6 @@ local tCount = 0 --amount of triangleEnemies
 function state:init()
     player:load()
     stars:load()
-    self:createBomber()
 
     Planet.img = love.graphics.newImage("graphics/planet.png")
     Planet.imgSize = vector.new(Planet.img:getWidth(), Planet.img:getHeight())
@@ -46,11 +45,9 @@ function state:update(dt)
 
     if bomber ~= nil then
         bomber:update(dt, player)
-    else
-
     end
 
-    self:spawnFreighters()
+    self:spawnEmemies()
 
     if Player.enabled then
         player:update()
@@ -98,6 +95,14 @@ function state:update(dt)
                 end
             end
         end
+
+        -- shot <-> player collision
+        if Player.enabled then
+            if shot:checkCollision(player) then
+                Signals.emit('player_destroyed', player.position)
+                table.remove(Cannon.cannonShots, i)
+            end
+        end
     end
 
     --bomber <-> player collision
@@ -111,25 +116,26 @@ function state:update(dt)
                 end
             end
         end
+
+        for i,bomberShot in ipairs(bomber.shots) do
+            --bomberShot <-> player collision
+            if bomberShot:playerCollision(player) then
+                Signals.emit('player_destroyed', player.position)
+                table.remove(bomber.shots, i)
+                bomber.shotCount = 0
+            end
+
+            --bomberShot <-> circle collision
+            if bomberShot:circleCollision(circleRadius+10) then
+                Signals.emit('circle_hit', bomberShot.position, EnemyBomber.damage)
+                table.remove(bomber.shots, i)
+                bomber.shotCount = 0
+            end
+        end
     end
 
-    for i,bomberShot in ipairs(bomber.shots) do
-        --bomberShot <-> player collision
-        if bomberShot:playerCollision(player) then
-            Signals.emit('player_destroyed', player.position)
-            table.remove(bomber.shots, i)
-            EnemyBomber.shotCount = 0
-        end
 
-        --bomberShot <-> circle collision
-        if bomberShot:circleCollision(circleRadius+10) then
-            Signals.emit('circle_hit', bomberShot.position, EnemyBomber.damage)
-            table.remove(bomber.shots, i)
-            bomber.shotCount = 0
-        end
-    end
-
-    if hitpoints <= 0 or Player.lives == 0 then
+    if Player.lives == 0 then
         Gamestate.switch(Gamestate.gameover)
     end
 
@@ -170,7 +176,7 @@ function state:draw()
     cam:detach()
 end
 
-function state:spawnFreighters()
+function state:spawnEmemies()
     -- add fighters
     if tCount < 7 then
         if Player.score <= 100 then
@@ -195,6 +201,23 @@ function state:spawnFreighters()
 
         Timer.addPeriodic(period, function() self:createFighter() end, randomAdd)
         tCount = tCount + randomAdd
+    end
+
+    if hitpoints <= 400 then
+        --TODO:
+        --stop drawing the big circle
+        --decrease circle radius to planet radius
+        --stop showing the points
+        --maybe create a new gamestate for that
+        --spawn 100 enemies
+        Timer.addPeriodic(2, function() self:createFighter() end, 1)
+
+        Timer.add(10, function() Gamestate.switch(Gamestate.gameover) end)
+        -- game ends
+    end
+    --spawn bomber
+    if Player.score >= 100 and bomber == nil then
+        Timer.add(4, function() self:createBomber() end)
     end
 end
 

@@ -35,3 +35,11 @@ function Shot:checkCollision(triangleEnemy)
     return self.position.x < object2_pos.x and shot_pos2.x > triangleEnemy.position.x and
         self.position.y < triangleEnemy.position.y and shot_pos2.y > triangleEnemy.position.y
 end
+
+function Shot:checkCollision(player)
+    local shot_pos2 = self.position + ShotimgSize
+    local object2_pos = player.position + player.imgSize
+
+    return self.position.x < object2_pos.x and shot_pos2.x > player.position.x and
+        self.position.y < player.position.y and shot_pos2.y > player.position.y
+end
