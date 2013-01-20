@@ -12,10 +12,6 @@ Shot = Class{function(self, targetVector, angle, radius)
 end}
 Shot.speed = 5
 
-function Shot:load()
-
-end
-
 function Shot:update(dt)
     self.direction = self.direction + self.distance
     self.acceleration = self.direction:normalized()

@@ -4,6 +4,7 @@ local state = Gamestate.game
 Timer = require 'libraries.hump.timer'
 require ".classes.Cannon"
 require ".classes.EnemyTriangle"
+require ".classes.EnemyBomber"
 require ".classes.Stars"
 require ".classes.ParticleSystems"
 require ".classes.Player"
@@ -12,6 +13,7 @@ local cannon = Cannon()
 local pSystems = ParticleSystems()
 local stars = Stars()
 local player = Player()
+local bomber = EnemyBomber()
 
 local hitpoints, hitpointsMax = 500, 500
 local hitpointsPC = 100
@@ -23,6 +25,8 @@ local tCount = 0
 function state:init()
     player:load()
     stars:load()
+    bomber = EnemyBomber(vector.new(40, 40))
+    bomber:load()
 
     Planet.img = love.graphics.newImage("graphics/planet.png")
     Planet.imgSize = vector.new(Planet.img:getWidth(), Planet.img:getHeight())
@@ -41,7 +45,7 @@ end
 function state:update(dt)
     cannon:update(dt, circleRadius)
     hitpointsPC = 100 / hitpointsMax * hitpoints
-
+    bomber:update(dt, player)
     -- add fighters
     if tCount < 7 then
         if Player.score <= 100 then
@@ -76,7 +80,7 @@ function state:update(dt)
         if not triangle:hasCollided(circleRadius) then
             triangle:update(dt)
         else
-            Signals.emit('circle_hit', triangle.position)
+            Signals.emit('circle_hit', triangle.position, EnemyTriangle.damage)
             Signals.emit('triangle_destroyed', triangle.position)
             table.remove(triangles, i)
         end
@@ -103,6 +107,23 @@ function state:update(dt)
         end
     end
 
+    --bomber shot <-> player collision
+    for i,bomberShot in ipairs(EnemyBomber.shots) do
+        if bomberShot:playerCollision(player) then
+            Signals.emit('player_destroyed', player.position)
+            table.remove(EnemyBomber.shots, i)
+            EnemyBomber.shotCount = 0
+        end
+
+        if bomberShot:circleCollision(circleRadius+10) then
+            Signals.emit('circle_hit', bomberShot.position, EnemyBomber.damage)
+            table.remove(EnemyBomber.shots, i)
+            EnemyBomber.shotCount = 0
+        end
+    end
+
+
+
     if hitpoints <= 0 or Player.lives == 0 then
         Gamestate.switch(Gamestate.gameover)
     end
@@ -114,6 +135,7 @@ function state:draw()
     cam:attach()
     stars:draw()
     cannon:draw()
+    bomber:draw()
     love.graphics.draw(Planet.img, winWidth/2-Planet.imgSize.x/2, winHeight/2-Planet.imgSize.y/2, 0)
 
 
@@ -204,10 +226,10 @@ function state:startGame()
     tCount = 0
 end
 
-Signals.register('circle_hit', function(position)
+Signals.register('circle_hit', function(position, damage)
     pSystems[2]:setPosition(position.x, position.y)
     pSystems[2]:start()
-    hitpoints = hitpoints - EnemyTriangle.damage
+    hitpoints = hitpoints - damage
     shakeCamera(0.2, 1)
 end)
 

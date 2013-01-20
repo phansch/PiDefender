@@ -13,7 +13,7 @@ function Player:load()
 end
 
 function Player:update()
-    self.position = mousePos - self.imgSize / 2
+    self.position = mousePos
 end
 
 function Player:draw()

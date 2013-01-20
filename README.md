@@ -35,6 +35,8 @@ Making the game more difficult
  * A new enemy: The strategic bomber.
    * Circles the planet, drops bombs that deal massive damage
  * Player can get killed by his own fire.
+ * Add a game ending:
+    * Once the circle is destroyed, Spawn dozens of enemies which then detroy the planet
 
 Stuff
 
@@ -45,22 +47,3 @@ Stuff
 
 ### Week 4 ###
  * New cannon ammo: AOE bombs
-
-## Done ##
-
- * Basic cannon movement *(1)*
- * Basic story *(1)*
- * Basic (triangle) enemies *(2)*
- * Show custom player shape (the scout ship) at mouse position *(3)*
- * Health system. (Loose conditions) *(3)*
- * Make enemies spawn at random locations (out of sight) *(3)*
- * Shooting with the cannon *(3)*
- * Fixes for shooting *(4, 6)*
- * Refine cannon look *(6)*
- * Add starfield background *(6)*
- * gfx for explosions *(6)*
- * Collision between player shape and enemies *(6)*
- * Menu screen and game pausing *(6)*
- * Pause when game lost focus *(6)*
- * Tweak enemy numbers *(6)*
- * Music and sfx *(6)*
