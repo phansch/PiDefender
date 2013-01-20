@@ -40,3 +40,11 @@ function BomberShot:playerCollision(player)
     return self.position.x < object2_pos.x and shot_pos2.x > player.position.x and
         self.position.y < player.position.y and shot_pos2.y > player.position.y
 end
+
+function BomberShot:circleCollision(radius)
+    centerVector = vector.new(winWidth/2, winHeight/2)
+    if self.position:dist(centerVector) < radius then
+        return true
+    end
+    return false
+end

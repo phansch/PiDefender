@@ -13,20 +13,18 @@ local cannon = Cannon()
 local pSystems = ParticleSystems()
 local stars = Stars()
 local player = Player()
-local bomber = EnemyBomber()
 
 local hitpoints, hitpointsMax = 500, 500
 local hitpointsPC = 100
 local circleRadius = 150
 local triangles = {} --basic enemies
 local Planet = {}
-local tCount = 0
+local tCount = 0 --amount of triangleEnemies
 
 function state:init()
     player:load()
     stars:load()
-    bomber = EnemyBomber(vector.new(40, 40))
-    bomber:load()
+    self:createBomber()
 
     Planet.img = love.graphics.newImage("graphics/planet.png")
     Planet.imgSize = vector.new(Planet.img:getWidth(), Planet.img:getHeight())
@@ -45,7 +43,134 @@ end
 function state:update(dt)
     cannon:update(dt, circleRadius)
     hitpointsPC = 100 / hitpointsMax * hitpoints
-    bomber:update(dt, player)
+
+    if bomber ~= nil then
+        bomber:update(dt, player)
+    else
+
+    end
+
+    self:spawnFreighters()
+
+    if Player.enabled then
+        player:update()
+    end
+
+
+    -- ## collision checks ##
+    for i,triangle in ipairs(triangles) do
+        triangle:update(dt)
+
+        -- triangle <-> circle collision
+        if triangle:hasCollided(circleRadius) then
+            Signals.emit('circle_hit', triangle.position, EnemyTriangle.damage)
+            Signals.emit('triangle_destroyed', triangle.position)
+            table.remove(triangles, i)
+        end
+
+        -- triangle <-> player collision
+        if player:hasCollided(triangle) then
+            Signals.emit('triangle_destroyed', triangle.position)
+            Signals.emit('player_destroyed', player.position)
+            table.remove(triangles, i)
+        end
+    end
+
+    for i,shot in ipairs(Cannon.cannonShots) do
+        for j,triangle in ipairs(triangles) do
+
+            -- shot <-> triangle collision
+            if shot:checkCollision(triangle) then
+                Signals.emit('triangle_destroyed', triangle.position)
+                Player.score = Player.score + 5
+                table.remove(triangles, j)
+                table.remove(Cannon.cannonShots, i)
+            end
+        end
+
+        --bomber <-> shot collision
+        if bomber ~= nil then
+            if bomber:hasCollided(shot) then
+                if bomber.hp <= 0 then
+                    Signals.emit('bomber_destroyed', bomber.position)
+                else
+                    Signals.emit('bomber_hit', bomber)
+                end
+            end
+        end
+    end
+
+    --bomber <-> player collision
+    if bomber ~= nil then
+        if bomber:hasCollided(player) then
+            if Player.enabled then
+                Signals.emit('player_destroyed', player.position)
+                Signals.emit('bomber_hit', bomber)
+                if bomber.hp <= 0 then
+                    Signals.emit('bomber_destroyed', bomber.position)
+                end
+            end
+        end
+    end
+
+    for i,bomberShot in ipairs(bomber.shots) do
+        --bomberShot <-> player collision
+        if bomberShot:playerCollision(player) then
+            Signals.emit('player_destroyed', player.position)
+            table.remove(bomber.shots, i)
+            EnemyBomber.shotCount = 0
+        end
+
+        --bomberShot <-> circle collision
+        if bomberShot:circleCollision(circleRadius+10) then
+            Signals.emit('circle_hit', bomberShot.position, EnemyBomber.damage)
+            table.remove(bomber.shots, i)
+            bomber.shotCount = 0
+        end
+    end
+
+    if hitpoints <= 0 or Player.lives == 0 then
+        Gamestate.switch(Gamestate.gameover)
+    end
+
+    pSystems:update(dt)
+end
+
+function state:draw()
+    cam:attach()
+    stars:draw()
+    cannon:draw()
+
+    if bomber ~= nil then
+        bomber:draw()
+    end
+
+    love.graphics.draw(Planet.img, winWidth/2-Planet.imgSize.x/2, winHeight/2-Planet.imgSize.y/2, 0)
+
+
+    for i,triangle in ipairs(triangles) do
+        triangle:draw()
+    end
+
+    player:draw()
+
+    -- draw hitpoints
+    love.graphics.print(hitpointsPC.."%", winWidth/2-12, winHeight/2-135)
+
+    love.graphics.setLineWidth(10)
+    love.graphics.setColor(255, 255, 255, 200)
+    love.graphics.circle("line", winWidth/2, winHeight/2, circleRadius, 360)
+    love.graphics.setColor(255, 9, 0)
+    --print(hitpointsPC)
+    --drawArc(winWidth/2, winHeight/2, circleRadius-4, math.pi/2.5, math.pi/1.5, 50)
+
+    love.graphics.setLineWidth(1)
+    love.graphics.setColor(255, 255, 255)
+    pSystems:draw()
+    cam:detach()
+end
+
+function state:spawnFreighters()
     -- add fighters
     if tCount < 7 then
         if Player.score <= 100 then
@@ -71,94 +196,11 @@ function state:update(dt)
         Timer.addPeriodic(period, function() self:createFighter() end, randomAdd)
         tCount = tCount + randomAdd
     end
-
-    if Player.enabled then
-        player:update()
-    end
-
-    for i,triangle in ipairs(triangles) do
-        if not triangle:hasCollided(circleRadius) then
-            triangle:update(dt)
-        else
-            Signals.emit('circle_hit', triangle.position, EnemyTriangle.damage)
-            Signals.emit('triangle_destroyed', triangle.position)
-            table.remove(triangles, i)
-        end
-    end
-
-    -- shot <-> triangle collision
-    for i,shot in ipairs(Cannon.cannonShots) do
-        for j,triangle in ipairs(triangles) do
-            if shot:checkCollision(triangle) then
-                Signals.emit('triangle_destroyed', triangle.position)
-                Player.score = Player.score + 5
-                table.remove(triangles, j)
-                table.remove(Cannon.cannonShots, i)
-            end
-        end
-    end
-
-    -- triangle <-> player collision
-    for i,triangle in ipairs(triangles) do
-        if player:hasCollided(triangle) then
-            Signals.emit('triangle_destroyed', triangle.position)
-            Signals.emit('player_destroyed', player.position)
-            table.remove(triangles, i)
-        end
-    end
-
-    --bomber shot <-> player collision
-    for i,bomberShot in ipairs(EnemyBomber.shots) do
-        if bomberShot:playerCollision(player) then
-            Signals.emit('player_destroyed', player.position)
-            table.remove(EnemyBomber.shots, i)
-            EnemyBomber.shotCount = 0
-        end
-
-        if bomberShot:circleCollision(circleRadius+10) then
-            Signals.emit('circle_hit', bomberShot.position, EnemyBomber.damage)
-            table.remove(EnemyBomber.shots, i)
-            EnemyBomber.shotCount = 0
-        end
-    end
-
-
-
-    if hitpoints <= 0 or Player.lives == 0 then
-        Gamestate.switch(Gamestate.gameover)
-    end
-
-    pSystems:update(dt)
 end
 
-function state:draw()
-    cam:attach()
-    stars:draw()
-    cannon:draw()
-    bomber:draw()
-    love.graphics.draw(Planet.img, winWidth/2-Planet.imgSize.x/2, winHeight/2-Planet.imgSize.y/2, 0)
-
-
-    for i,triangle in ipairs(triangles) do
-        triangle:draw()
-    end
-
-    player:draw()
-
-    -- draw hitpoints
-    love.graphics.print(hitpointsPC.."%", winWidth/2-12, winHeight/2-135)
-
-    love.graphics.setLineWidth(10)
-    love.graphics.setColor(255, 255, 255, 200)
-    love.graphics.circle("line", winWidth/2, winHeight/2, circleRadius, 360)
-    love.graphics.setColor(255, 9, 0)
-    --print(hitpointsPC)
-    --drawArc(winWidth/2, winHeight/2, circleRadius-4, math.pi/2.5, math.pi/1.5, 50)
-
-    love.graphics.setLineWidth(1)
-    love.graphics.setColor(255, 255, 255)
-    pSystems:draw()
-    cam:detach()
+function state:createBomber()
+    bomber = EnemyBomber()
+    bomber:load()
 end
 
 function state:createFighter()
@@ -260,4 +302,21 @@ Signals.register('player_destroyed', function(position)
         Cannon.allowFire = true
         love.mouse.setVisible(false)
     end)
+end)
+
+Signals.register('bomber_hit', function(bomber)
+    -- change color of bomber quickly
+    print("bomber hit")
+    bomber.hp = bomber.hp - 5
+    shakeCamera(0.2, 1)
+end)
+
+Signals.register('bomber_destroyed', function(position)
+    pSystems[2]:setPosition(position.x, position.y)
+    pSystems[2]:start()
+    print("bomber_destroyed")
+    shakeCamera(0.2, 1)
+
+    --TODO: Remove bomber actually
+    state:createBomber()
 end)
