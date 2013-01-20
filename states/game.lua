@@ -10,7 +10,7 @@ require ".classes.ParticleSystems"
 require ".classes.Player"
 
 local cannon = Cannon()
-local pSystems = ParticleSystems()
+local psManager = ParticleSystemManager()
 local stars = Stars()
 local player = Player()
 
@@ -20,6 +20,8 @@ local circleRadius = 150
 local triangles = {} --basic enemies
 local Planet = {}
 local tCount = 0 --amount of triangleEnemies
+local drawCircle = true
+local bomberCreated = false
 
 function state:init()
     player:load()
@@ -28,8 +30,7 @@ function state:init()
     Planet.img = love.graphics.newImage("graphics/planet.png")
     Planet.imgSize = vector.new(Planet.img:getWidth(), Planet.img:getHeight())
 
-    pSystems:initTriangleExplosion()
-    pSystems:initCircleHit()
+    psManager:load()
 end
 
 function state:enter(previous)
@@ -139,13 +140,16 @@ function state:update(dt)
         Gamestate.switch(Gamestate.gameover)
     end
 
-    pSystems:update(dt)
+    psManager:update(dt)
 end
 
 function state:draw()
     cam:attach()
     stars:draw()
-    cannon:draw()
+
+    if drawCircle then
+        cannon:draw()
+    end
 
     if bomber ~= nil then
         bomber:draw()
@@ -158,21 +162,19 @@ function state:draw()
         triangle:draw()
     end
 
-    player:draw()
+    if drawCircle then
+        player:draw()
 
-    -- draw hitpoints
-    love.graphics.print(hitpointsPC.."%", winWidth/2-12, winHeight/2-135)
-
-    love.graphics.setLineWidth(10)
-    love.graphics.setColor(255, 255, 255, 200)
-    love.graphics.circle("line", winWidth/2, winHeight/2, circleRadius, 360)
-    love.graphics.setColor(255, 9, 0)
-    --print(hitpointsPC)
-    --drawArc(winWidth/2, winHeight/2, circleRadius-4, math.pi/2.5, math.pi/1.5, 50)
-
+        -- draw hitpoints
+        love.graphics.print(hitpointsPC.."%", winWidth/2-12, winHeight/2-135)
+        love.graphics.setLineWidth(10)
+        love.graphics.setColor(255, 255, 255, 200)
+        love.graphics.circle("line", winWidth/2, winHeight/2, circleRadius, 360)
+        love.graphics.setColor(255, 9, 0)
+    end
     love.graphics.setLineWidth(1)
     love.graphics.setColor(255, 255, 255)
-    pSystems:draw()
+    psManager:draw()
     cam:detach()
 end
 
@@ -203,21 +205,24 @@ function state:spawnEmemies()
         tCount = tCount + randomAdd
     end
 
-    if hitpoints <= 400 then
+    if hitpoints <= 0 and tCount <= 50 then
         --TODO:
         --stop drawing the big circle
+        --make the circle explode
         --decrease circle radius to planet radius
         --stop showing the points
         --maybe create a new gamestate for that
         --spawn 100 enemies
-        Timer.addPeriodic(2, function() self:createFighter() end, 1)
+        circleRadius = Planet.imgSize.x / 2
+        drawCircle = false
+        self:createFighter()
+        tCount = tCount + 1
 
-        Timer.add(10, function() Gamestate.switch(Gamestate.gameover) end)
-        -- game ends
+        Timer.add(5, function() Gamestate.switch(Gamestate.gameover) end)
     end
     --spawn bomber
-    if Player.score >= 100 and bomber == nil then
-        Timer.add(4, function() self:createBomber() end)
+    if Player.score >= 0 and bomber == nil and bomberCreated == false then
+        Signals.emit('create_bomber')
     end
 end
 
@@ -292,28 +297,26 @@ function state:startGame()
 end
 
 Signals.register('circle_hit', function(position, damage)
-    pSystems[2]:setPosition(position.x, position.y)
-    pSystems[2]:start()
+    psManager:play("p", position)
     hitpoints = hitpoints - damage
     shakeCamera(0.2, 1)
 end)
 
 Signals.register('triangle_destroyed', function(position)
-    pSystems[1]:setPosition(position.x, position.y)
-    pSystems[1]:start()
+    psManager:play("p", position)
 
-    --love.audio.play(sfx_explosion)
     --love.audio.rewind(sfx_explosion)
+    love.audio.play(sfx_explosion)
 
     tCount = tCount - 1
 end)
 
 Signals.register('player_destroyed', function(position)
-    pSystems[2]:setPosition(position.x, position.y)
-    pSystems[2]:start()
+    psManager:play("p", position)
 
-    --love.audio.play(sfx_explosion)
     --love.audio.rewind(sfx_explosion)
+    love.audio.play(sfx_explosion)
+
     shakeCamera(0.4, 2)
 
     Player.lives = Player.lives - 1
@@ -329,17 +332,20 @@ end)
 
 Signals.register('bomber_hit', function(bomber)
     -- change color of bomber quickly
-    print("bomber hit")
     bomber.hp = bomber.hp - 5
     shakeCamera(0.2, 1)
 end)
 
 Signals.register('bomber_destroyed', function(position)
-    pSystems[2]:setPosition(position.x, position.y)
-    pSystems[2]:start()
-    print("bomber_destroyed")
+    bomberCreated = false
+    psManager:play("p", position)
     shakeCamera(0.2, 1)
+    bomber = nil
+end)
 
+Signals.register('create_bomber', function()
     --TODO: Remove bomber actually
-    state:createBomber()
+    print("create bomber")
+    Timer.add(5, function() state:createBomber() end)
+    bomberCreated = true
 end)
