@@ -111,6 +111,7 @@ function state:update(dt)
 end
 
 function state:draw()
+    cam:attach()
     stars:draw()
     cannon:draw()
     love.graphics.draw(Planet.img, winWidth/2-Planet.imgSize.x/2, winHeight/2-Planet.imgSize.y/2, 0)
@@ -135,6 +136,7 @@ function state:draw()
     love.graphics.setLineWidth(1)
     love.graphics.setColor(255, 255, 255)
     pSystems:draw()
+    cam:detach()
 end
 
 function state:createFighter()
@@ -206,6 +208,7 @@ Signals.register('circle_hit', function(position)
     pSystems[2]:setPosition(position.x, position.y)
     pSystems[2]:start()
     hitpoints = hitpoints - EnemyTriangle.damage
+    shakeCamera(0.2, 1)
 end)
 
 Signals.register('triangle_destroyed', function(position)
@@ -224,6 +227,7 @@ Signals.register('player_destroyed', function(position)
 
     --love.audio.play(sfx_explosion)
     --love.audio.rewind(sfx_explosion)
+    shakeCamera(0.4, 2)
 
     Player.lives = Player.lives - 1
     Player.enabled = false

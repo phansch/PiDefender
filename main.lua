@@ -1,6 +1,7 @@
 Gamestate = require "libraries.hump.gamestate"
 Signals = require "libraries.hump.signal"
 vector = require ".libraries.hump.vector"
+camera = require ".libraries.hump.camera"
 
 winWidth = love.graphics.getWidth()
 winHeight = love.graphics.getHeight()
@@ -25,6 +26,7 @@ local gameover = require('states.gameover')
 function love.load()
     Gamestate.registerEvents()
     Gamestate.switch(Gamestate.menu)
+    cam = camera()
 end
 
 function love.update(dt)
