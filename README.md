@@ -38,8 +38,10 @@ Making the game more difficult
 
 Stuff
 
- * Fix game crashing on Linux
  * Delay the game-over screen for 3 seconds
+ * Change color of circle when hit
+ * Make player shape rotate
+ * Add engine trails to enemies and player
 
 ### Week 4 ###
  * New cannon ammo: AOE bombs
