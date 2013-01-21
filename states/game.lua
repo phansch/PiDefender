@@ -295,6 +295,12 @@ function state:startGame()
     --allow cannon fire
     Cannon.allowFire = true
 
+    bomber = nil
+    bomberCreated = false
+
+    circleRadius = 150
+    drawCircle = true
+
     tCount = 0
 end
 

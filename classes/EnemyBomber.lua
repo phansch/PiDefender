@@ -18,8 +18,8 @@ EnemyBomber.speed = 2
 EnemyBomber.damage = 30
 
 function EnemyBomber:load()
-    EnemyBomber.img = love.graphics.newImage("graphics/enemy1.png")
-    EnemyBomber.imgSize = vector.new(EnemyBomber.img:getWidth()*2, EnemyBomber.img:getHeight()*2)
+    EnemyBomber.img = love.graphics.newImage("graphics/triangle-bomber.png")
+    EnemyBomber.imgSize = vector.new(EnemyBomber.img:getWidth(), EnemyBomber.img:getHeight())
 end
 
 function EnemyBomber:update(dt, player)
@@ -46,7 +46,7 @@ end
 function EnemyBomber:draw()
     love.graphics.setColorMode("modulate")
     love.graphics.setColor(0, 255, 255)
-    love.graphics.draw(self.img, self.position.x, self.position.y, self.rotation, 2, 2, self.imgSize.x/2, self.imgSize.y/2)
+    love.graphics.draw(self.img, self.position.x, self.position.y, self.rotation, 0.2, 0.2, self.imgSize.x/2, self.imgSize.y/2)
     love.graphics.setColor(255, 255, 255)
 
     --draw shot
