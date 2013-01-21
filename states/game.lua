@@ -293,6 +293,12 @@ function state:startGame()
     --allow cannon fire
     Cannon.allowFire = true
 
+    bomber = nil
+    bomberCreated = false
+
+    circleRadius = 150
+    drawCircle = true
+
     tCount = 0
 end
 
@@ -306,7 +312,7 @@ Signals.register('triangle_destroyed', function(position)
     psManager:play("p", position)
 
     --love.audio.rewind(sfx_explosion)
-    love.audio.play(sfx_explosion)
+    --love.audio.play(sfx_explosion)
 
     tCount = tCount - 1
 end)
@@ -315,7 +321,7 @@ Signals.register('player_destroyed', function(position)
     psManager:play("p", position)
 
     --love.audio.rewind(sfx_explosion)
-    love.audio.play(sfx_explosion)
+    --love.audio.play(sfx_explosion)
 
     shakeCamera(0.4, 2)
 
