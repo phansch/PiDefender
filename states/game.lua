@@ -22,6 +22,7 @@ local Planet = {}
 local tCount = 0 --amount of triangleEnemies
 local drawCircle = true
 local bomberCreated = false
+local circleColor = {255, 255, 255, 200}
 
 function state:init()
     player:load()
@@ -166,9 +167,10 @@ function state:draw()
         player:draw()
 
         -- draw hitpoints
+        love.graphics.setColor(circleColor)
         love.graphics.print(hitpointsPC.."%", winWidth/2-12, winHeight/2-135)
         love.graphics.setLineWidth(10)
-        love.graphics.setColor(255, 255, 255, 200)
+
         love.graphics.circle("line", winWidth/2, winHeight/2, circleRadius, 360)
         love.graphics.setColor(255, 9, 0)
     end
@@ -215,13 +217,13 @@ function state:spawnEmemies()
         --spawn 100 enemies
         circleRadius = Planet.imgSize.x / 2
         drawCircle = false
-        self:createFighter()
+        self:createFighter() -- creates lots of fighters
         tCount = tCount + 1
 
-        Timer.add(5, function() Gamestate.switch(Gamestate.gameover) end)
+        Timer.add(10, function() Gamestate.switch(Gamestate.gameover) end)
     end
     --spawn bomber
-    if Player.score >= 0 and bomber == nil and bomberCreated == false then
+    if Player.score >= 150 and bomber == nil and bomberCreated == false then
         Signals.emit('create_bomber')
     end
 end
@@ -299,6 +301,10 @@ end
 Signals.register('circle_hit', function(position, damage)
     psManager:play("p", position)
     hitpoints = hitpoints - damage
+    --change circle color for a short amount of time
+    circleColor = { 255, 0, 0, 200}
+    Timer.add(0.01, function() circleColor = { 255, 255, 255, 200} end)
+
     shakeCamera(0.2, 1)
 end)
 
@@ -306,7 +312,7 @@ Signals.register('triangle_destroyed', function(position)
     psManager:play("p", position)
 
     --love.audio.rewind(sfx_explosion)
-    love.audio.play(sfx_explosion)
+    --love.audio.play(sfx_explosion)
 
     tCount = tCount - 1
 end)
@@ -315,7 +321,7 @@ Signals.register('player_destroyed', function(position)
     psManager:play("p", position)
 
     --love.audio.rewind(sfx_explosion)
-    love.audio.play(sfx_explosion)
+    --love.audio.play(sfx_explosion)
 
     shakeCamera(0.4, 2)
 
