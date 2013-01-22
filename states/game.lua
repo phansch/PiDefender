@@ -311,8 +311,9 @@ end)
 Signals.register('triangle_destroyed', function(position)
     psManager:play("p", position)
 
-    --love.audio.rewind(sfx_explosion)
-    --love.audio.play(sfx_explosion)
+    love.audio.play(sfx_explosion)
+    love.audio.stop(sfx_explosion)
+
     Player.score = Player.score + 5
     tCount = tCount - 1
 end)
@@ -320,8 +321,8 @@ end)
 Signals.register('player_destroyed', function(position)
     psManager:play("p", position)
 
-    --love.audio.rewind(sfx_explosion)
-    --love.audio.play(sfx_explosion)
+    love.audio.play(sfx_explosion)
+    love.audio.stop(sfx_explosion)
 
     shakeCamera(0.4, 2)
 

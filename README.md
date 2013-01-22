@@ -20,30 +20,18 @@ Story will be updated and refined during the month.
 
 [Bugs](https://github.com/phansch/PiDefender/issues)
 
-### Week 1 ###
+### Week 1, 2 & 3 ###
 
 Done
-
-### Week 2 ###
-
-Done
-
-### Week 3 ###
-
-Making the game more difficult
-
- * A new enemy: The strategic bomber.
-   * Circles the planet, drops bombs that deal massive damage
- * Player can get killed by his own fire.
- * Add a game ending:
-    * Once the circle is destroyed, Spawn dozens of enemies which then detroy the planet
-
-Stuff
-
- * Delay the game-over screen for 3 seconds
- * Change color of circle when hit
- * Make player shape rotate
- * Add engine trails to enemies and player
 
 ### Week 4 ###
+
  * New cannon ammo: AOE bombs
+ * Update the title screen image
+ * Fix particle systems not playing at the same time
+
+Juice
+
+ * Use a better shape for the player's scout ship so it will be more obvious for the play what he's supposed to do.
+ * When the scout ship is killed, add some kind of indication that it will respawn
+ 
