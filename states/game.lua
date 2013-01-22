@@ -355,8 +355,6 @@ Signals.register('bomber_destroyed', function(position)
 end)
 
 Signals.register('create_bomber', function()
-    --TODO: Remove bomber actually
-    print("create bomber")
     Timer.add(5, function() state:createBomber() end)
     bomberCreated = true
 end)

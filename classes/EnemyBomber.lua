@@ -15,14 +15,11 @@ EnemyBomber = Class{function(self)
     local choose = math.random(1, 2)
     if choose == 1 then
         x = math.random(50, winWidth/2 - 150)
-        print(choose.." x:"..x)
     else
         x = math.random(winWidth/2 + 150, winWidth-50)
-        print(choose.." x:"..x)
     end
 
     self.startPos = vector.new(x, y)
-    print(self.startPos)
     self.position = self.startPos
 end}
 EnemyBomber.speed = 2
