@@ -14,6 +14,9 @@ local psManager = ParticleSystemManager()
 local stars = Stars()
 local player = Player()
 
+
+
+local circleColor, bomberColor = {255, 255, 255, 255}
 local hitpoints, hitpointsMax = 500, 500
 local hitpointsPC = 100
 local circleRadius = 150
@@ -80,7 +83,6 @@ function state:update(dt)
             -- shot <-> triangle collision
             if shot:checkCollision(triangle) then
                 Signals.emit('triangle_destroyed', triangle.position)
-                Player.score = Player.score + 5
                 table.remove(triangles, j)
                 table.remove(Cannon.cannonShots, i)
             end
@@ -168,7 +170,7 @@ function state:draw()
         -- draw hitpoints
         love.graphics.print(hitpointsPC.."%", winWidth/2-12, winHeight/2-135)
         love.graphics.setLineWidth(10)
-        love.graphics.setColor(255, 255, 255, 200)
+        love.graphics.setColor(circleColor)
         love.graphics.circle("line", winWidth/2, winHeight/2, circleRadius, 360)
         love.graphics.setColor(255, 9, 0)
     end
@@ -206,13 +208,6 @@ function state:spawnEmemies()
     end
 
     if hitpoints <= 0 and tCount <= 50 then
-        --TODO:
-        --stop drawing the big circle
-        --make the circle explode
-        --decrease circle radius to planet radius
-        --stop showing the points
-        --maybe create a new gamestate for that
-        --spawn 100 enemies
         circleRadius = Planet.imgSize.x / 2
         drawCircle = false
         self:createFighter()
@@ -306,6 +301,11 @@ Signals.register('circle_hit', function(position, damage)
     psManager:play("p", position)
     hitpoints = hitpoints - damage
     shakeCamera(0.2, 1)
+    circleColor = {255, 0, 0, 255}
+    Timer.add(0.03, function()
+        circleColor = {255, 255, 255, 255}
+    end)
+
 end)
 
 Signals.register('triangle_destroyed', function(position)
@@ -313,7 +313,7 @@ Signals.register('triangle_destroyed', function(position)
 
     --love.audio.rewind(sfx_explosion)
     --love.audio.play(sfx_explosion)
-
+    Player.score = Player.score + 5
     tCount = tCount - 1
 end)
 
@@ -340,13 +340,18 @@ Signals.register('bomber_hit', function(bomber)
     -- change color of bomber quickly
     bomber.hp = bomber.hp - 5
     shakeCamera(0.2, 1)
+    bomber.color = {255, 255, 255, 255}
+    Timer.add(0.001, function()
+        bomber.color = {255, 0, 0, 255}
+    end)
 end)
 
 Signals.register('bomber_destroyed', function(position)
     bomberCreated = false
-    psManager:play("p", position)
+    psManager:play("p", position + EnemyBomber.imgSize)
     shakeCamera(0.2, 1)
     bomber = nil
+    Player.score = Player.score + 15
 end)
 
 Signals.register('create_bomber', function()
