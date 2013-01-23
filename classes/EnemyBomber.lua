@@ -5,12 +5,20 @@ EnemyBomber = Class{function(self)
     self.hp = 250
     self.shots = {}
     self.shotCount = 0
+    self.color = {255, 0, 0, 255}
 
     self.direction = vector.new(0, -1)
     self.rotation = math.pi
 
     local y = winHeight + 10
-    local x = math.random(10, winWidth-10)
+    local x = 0
+    local choose = math.random(1, 2)
+    if choose == 1 then
+        x = math.random(50, winWidth/2 - 150)
+    else
+        x = math.random(winWidth/2 + 150, winWidth-50)
+    end
+
     self.startPos = vector.new(x, y)
     self.position = self.startPos
 end}
@@ -19,7 +27,7 @@ EnemyBomber.damage = 30
 
 function EnemyBomber:load()
     EnemyBomber.img = love.graphics.newImage("graphics/triangle-bomber.png")
-    EnemyBomber.imgSize = vector.new(EnemyBomber.img:getWidth(), EnemyBomber.img:getHeight())
+    EnemyBomber.imgSize = vector.new(EnemyBomber.img:getWidth()*0.2, EnemyBomber.img:getHeight()*0.2)
 end
 
 function EnemyBomber:update(dt, player)
@@ -45,9 +53,9 @@ end
 
 function EnemyBomber:draw()
     love.graphics.setColorMode("modulate")
-    love.graphics.setColor(0, 255, 255)
-    love.graphics.draw(self.img, self.position.x, self.position.y, self.rotation, 0.2, 0.2, self.imgSize.x/2, self.imgSize.y/2)
-    love.graphics.setColor(255, 255, 255)
+    love.graphics.setColor(self.color)
+    love.graphics.draw(self.img, self.position.x+EnemyBomber.imgSize.x, self.position.y+EnemyBomber.imgSize.y, self.rotation, 0.2, 0.2, self.imgSize.x/2, self.imgSize.y/2)
+    love.graphics.setColor(255, 255, 255, 255)
 
     --draw shot
     for i,shot in ipairs(self.shots) do

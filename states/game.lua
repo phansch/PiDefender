@@ -9,11 +9,12 @@ require ".classes.Stars"
 require ".classes.ParticleSystems"
 require ".classes.Player"
 
+local ParticleSystems = {}
 local cannon = Cannon()
-local psManager = ParticleSystemManager()
 local stars = Stars()
 local player = Player()
 
+local circleColor, bomberColor = {255, 255, 255, 255}
 local hitpoints, hitpointsMax = 500, 500
 local hitpointsPC = 100
 local circleRadius = 150
@@ -30,8 +31,6 @@ function state:init()
 
     Planet.img = love.graphics.newImage("graphics/planet.png")
     Planet.imgSize = vector.new(Planet.img:getWidth(), Planet.img:getHeight())
-
-    psManager:load()
 end
 
 function state:enter(previous)
@@ -81,7 +80,6 @@ function state:update(dt)
             -- shot <-> triangle collision
             if shot:checkCollision(triangle) then
                 Signals.emit('triangle_destroyed', triangle.position)
-                Player.score = Player.score + 5
                 table.remove(triangles, j)
                 table.remove(Cannon.cannonShots, i)
             end
@@ -136,12 +134,23 @@ function state:update(dt)
         end
     end
 
+    --TODO: Player <-> aoe collision
+    --foreach aoe check collided with player
+
+    --TODO: Bomber <-> aoe collision
+    --foreach aoe check collided with bomber
+
+    --TODO: Fighter <-> aoe collision
+    --foreach fighter check each aoe
 
     if Player.lives == 0 then
         Gamestate.switch(Gamestate.gameover)
     end
 
-    psManager:update(dt)
+    --Update particle systems
+    for i,system in ipairs(ParticleSystems) do
+        system:update(dt)
+    end
 end
 
 function state:draw()
@@ -170,13 +179,19 @@ function state:draw()
         love.graphics.setColor(circleColor)
         love.graphics.print(hitpointsPC.."%", winWidth/2-12, winHeight/2-135)
         love.graphics.setLineWidth(10)
-
+        love.graphics.setColor(circleColor)
         love.graphics.circle("line", winWidth/2, winHeight/2, circleRadius, 360)
         love.graphics.setColor(255, 9, 0)
     end
     love.graphics.setLineWidth(1)
     love.graphics.setColor(255, 255, 255)
-    psManager:draw()
+    for i,system in ipairs(ParticleSystems) do
+        system:draw()
+        --remove inactive particle systems
+        if system.ps:isEmpty() then
+            table.remove(ParticleSystems, i)
+        end
+    end
     cam:detach()
 end
 
@@ -208,13 +223,6 @@ function state:spawnEmemies()
     end
 
     if hitpoints <= 0 and tCount <= 50 then
-        --TODO:
-        --stop drawing the big circle
-        --make the circle explode
-        --decrease circle radius to planet radius
-        --stop showing the points
-        --maybe create a new gamestate for that
-        --spawn 100 enemies
         circleRadius = Planet.imgSize.x / 2
         drawCircle = false
         self:createFighter() -- creates lots of fighters
@@ -259,6 +267,9 @@ end
 function state:keypressed(key)
     if key == ' ' then
         Signals.emit('cannon_shoot', cannon, circleRadius)
+    end
+    if key == 'm' then
+        Signals.emit('cannon_shootAOE', cannon, circleRadius)
     end
 end
 
@@ -305,29 +316,43 @@ function state:startGame()
 end
 
 Signals.register('circle_hit', function(position, damage)
-    psManager:play("p", position)
+    local pSystem = ParticleSystem(options[1], position)
+    table.insert(ParticleSystems, pSystem)
+    pSystem:play()
     hitpoints = hitpoints - damage
     --change circle color for a short amount of time
     circleColor = { 255, 0, 0, 200}
     Timer.add(0.01, function() circleColor = { 255, 255, 255, 200} end)
 
     shakeCamera(0.2, 1)
+    circleColor = {255, 0, 0, 255}
+    Timer.add(0.03, function()
+        circleColor = {255, 255, 255, 255}
+    end)
+
 end)
 
 Signals.register('triangle_destroyed', function(position)
-    psManager:play("p", position)
+    local pSystem = ParticleSystem(options[1], position)
+    table.insert(ParticleSystems, pSystem)
+    pSystem:play()
 
-    --love.audio.rewind(sfx_explosion)
-    --love.audio.play(sfx_explosion)
+    love.audio.play(sfx_explosion)
+    love.audio.stop(sfx_explosion)
 
+    Player.score = Player.score + 5
     tCount = tCount - 1
 end)
 
 Signals.register('player_destroyed', function(position)
-    psManager:play("p", position)
 
-    --love.audio.rewind(sfx_explosion)
-    --love.audio.play(sfx_explosion)
+    --create a new particle system
+    local pSystem = ParticleSystem(options[1], position)
+    table.insert(ParticleSystems, pSystem)
+    pSystem:play()
+
+    love.audio.play(sfx_explosion)
+    love.audio.stop(sfx_explosion)
 
     shakeCamera(0.4, 2)
 
@@ -346,18 +371,23 @@ Signals.register('bomber_hit', function(bomber)
     -- change color of bomber quickly
     bomber.hp = bomber.hp - 5
     shakeCamera(0.2, 1)
+    bomber.color = {255, 255, 255, 255}
+    Timer.add(0.001, function()
+        bomber.color = {255, 0, 0, 255}
+    end)
 end)
 
 Signals.register('bomber_destroyed', function(position)
     bomberCreated = false
-    psManager:play("p", position)
+    local pSystem = ParticleSystem(options[1], position)
+    table.insert(ParticleSystems, pSystem)
+    pSystem:play()
     shakeCamera(0.2, 1)
     bomber = nil
+    Player.score = Player.score + 15
 end)
 
 Signals.register('create_bomber', function()
-    --TODO: Remove bomber actually
-    print("create bomber")
     Timer.add(5, function() state:createBomber() end)
     bomberCreated = true
 end)
