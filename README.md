@@ -28,10 +28,10 @@ Done
 
  * New cannon ammo: AOE bombs
  * Update the title screen image
- * Fix particle systems not playing at the same time
+ * [Done] Fix particle systems not playing at the same time
 
 Juice
 
- * Use a better shape for the player's scout ship so it will be more obvious for the play what he's supposed to do.
+ * Use a better shape for the player's scout ship so it will be more obvious for the player what he's supposed to do.
  * When the scout ship is killed, add some kind of indication that it will respawn
  

@@ -257,6 +257,9 @@ function state:keypressed(key)
     if key == ' ' then
         Signals.emit('cannon_shoot', cannon, circleRadius)
     end
+    if key == 'm' then
+        Signals.emit('cannon_shootAOE', cannon, circleRadius)
+    end
 end
 
 function state:keyreleased(key)

@@ -10,6 +10,8 @@ sfx_pew = love.audio.newSource("audio/Laser_Shoot46.wav")
 
 Shotimg = love.graphics.newImage("graphics/bullet.png")
 ShotimgSize = vector.new(Shotimg:getWidth(), Shotimg:getHeight())
+aoeimg = love.graphics.newImage("graphics/bullet.png")
+aoeimgSize = vector.new(aoeimg:getWidth(), aoeimg:getHeight())
 
 sfx_pew:setVolume(1)
 sfx_explosion:setVolume(1)
