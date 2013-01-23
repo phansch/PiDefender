@@ -2,6 +2,7 @@ Gamestate = require "libraries.hump.gamestate"
 Signals = require "libraries.hump.signal"
 vector = require ".libraries.hump.vector"
 camera = require ".libraries.hump.camera"
+require ".options"
 
 music_background = love.audio.newSource("audio/Insistent.ogg")
 sfx_explosion = love.audio.newSource("audio/Explosion280.wav")

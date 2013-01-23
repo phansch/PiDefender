@@ -9,12 +9,10 @@ require ".classes.Stars"
 require ".classes.ParticleSystems"
 require ".classes.Player"
 
+local ParticleSystems = {}
 local cannon = Cannon()
-local psManager = ParticleSystemManager()
 local stars = Stars()
 local player = Player()
-
-
 
 local circleColor, bomberColor = {255, 255, 255, 255}
 local hitpoints, hitpointsMax = 500, 500
@@ -32,8 +30,6 @@ function state:init()
 
     Planet.img = love.graphics.newImage("graphics/planet.png")
     Planet.imgSize = vector.new(Planet.img:getWidth(), Planet.img:getHeight())
-
-    psManager:load()
 end
 
 function state:enter(previous)
@@ -137,12 +133,14 @@ function state:update(dt)
         end
     end
 
-
     if Player.lives == 0 then
         Gamestate.switch(Gamestate.gameover)
     end
 
-    psManager:update(dt)
+    --Update particle systems
+    for i,system in ipairs(ParticleSystems) do
+        system:update(dt)
+    end
 end
 
 function state:draw()
@@ -176,7 +174,13 @@ function state:draw()
     end
     love.graphics.setLineWidth(1)
     love.graphics.setColor(255, 255, 255)
-    psManager:draw()
+    for i,system in ipairs(ParticleSystems) do
+        system:draw()
+        --remove inactive particle systems
+        if system.ps:isEmpty() then
+            table.remove(ParticleSystems, i)
+        end
+    end
     cam:detach()
 end
 
@@ -298,7 +302,9 @@ function state:startGame()
 end
 
 Signals.register('circle_hit', function(position, damage)
-    psManager:play("p", position)
+    local pSystem = ParticleSystem(options[1], position)
+    table.insert(ParticleSystems, pSystem)
+    pSystem:play()
     hitpoints = hitpoints - damage
     shakeCamera(0.2, 1)
     circleColor = {255, 0, 0, 255}
@@ -309,7 +315,9 @@ Signals.register('circle_hit', function(position, damage)
 end)
 
 Signals.register('triangle_destroyed', function(position)
-    psManager:play("p", position)
+    local pSystem = ParticleSystem(options[1], position)
+    table.insert(ParticleSystems, pSystem)
+    pSystem:play()
 
     love.audio.play(sfx_explosion)
     love.audio.stop(sfx_explosion)
@@ -319,7 +327,11 @@ Signals.register('triangle_destroyed', function(position)
 end)
 
 Signals.register('player_destroyed', function(position)
-    psManager:play("p", position)
+
+    --create a new particle system
+    local pSystem = ParticleSystem(options[1], position)
+    table.insert(ParticleSystems, pSystem)
+    pSystem:play()
 
     love.audio.play(sfx_explosion)
     love.audio.stop(sfx_explosion)
@@ -349,7 +361,9 @@ end)
 
 Signals.register('bomber_destroyed', function(position)
     bomberCreated = false
-    psManager:play("p", position + EnemyBomber.imgSize)
+    local pSystem = ParticleSystem(options[1], position)
+    table.insert(ParticleSystems, pSystem)
+    pSystem:play()
     shakeCamera(0.2, 1)
     bomber = nil
     Player.score = Player.score + 15
