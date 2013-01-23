@@ -133,6 +133,15 @@ function state:update(dt)
         end
     end
 
+    --TODO: Player <-> aoe collision
+    --foreach aoe check collided with player
+
+    --TODO: Bomber <-> aoe collision
+    --foreach aoe check collided with bomber
+
+    --TODO: Fighter <-> aoe collision
+    --foreach fighter check each aoe
+
     if Player.lives == 0 then
         Gamestate.switch(Gamestate.gameover)
     end

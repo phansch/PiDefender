@@ -1,10 +1,12 @@
 Class = require ".libraries.hump.class"
 require ".libraries.Helper"
 
-aoe = Class{function(self, targetVector, angle, radius)
+aoe = Class{function(self, targetVector, angle)
+    self.radius = 0
+    self.maxRadius = 100
     self.angle = angle
     self.targetVector = targetVector
-    self.position = getCirclePoint(vector.new(winWidth/2, winHeight/2), self.angle, radius)
+    self.position = getCirclePoint(vector.new(winWidth/2, winHeight/2), self.angle, self.maxRadius)
     self.acceleration = vector.new(0.1, 0.1)
     self.velocity = vector.new(0, 0)
     self.direction = vector.new(0,0)
@@ -13,13 +15,16 @@ end}
 aoe.speed = 5
 
 function aoe:update(dt)
-    print(self.position:dist(self.targetVector))
     if self.position:dist(self.targetVector) > 5 and not self.stop then
         self.direction = self.position - self.targetVector
 
     else
         self.stop = true
         self.direction = vector.new(0,0)
+        if not self.emitted then
+            Signals.emit('aoe_init', self)
+            self.emitted = true
+        end
     end
     self.acceleration = self.direction:normalized() * -1
     self.velocity = self.velocity + self.acceleration * dt * aoe.speed
@@ -30,7 +35,14 @@ function aoe:update(dt)
 end
 
 function aoe:draw()
-    love.graphics.draw(aoeimg, self.position.x, self.position.y, self.angle + math.pi/2, 2, 2)
+    if not self.stop then
+        love.graphics.draw(aoeimg, self.position.x, self.position.y, self.angle + math.pi/2, 2, 2)
+    else
+        if self.radius < self.maxRadius then
+            love.graphics.circle("line", self.position.x, self.position.y, self.radius, 50)
+        end
+    end
+
 end
 
 function aoe:isInBounds()
@@ -52,3 +64,10 @@ function aoe:checkCollision(player)
     return self.position.x < object2_pos.x and shot_pos2.x > player.position.x and
         self.position.y < player.position.y and shot_pos2.y > player.position.y
 end
+
+Signals.register('aoe_init', function(aoe)
+    --increase maxRadius
+    Timer.addPeriodic(0.01, function()
+        aoe.radius = aoe.radius + 3
+    end, 100)
+end)
