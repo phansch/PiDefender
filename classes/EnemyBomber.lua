@@ -22,7 +22,7 @@ EnemyBomber = Class{function(self)
     self.startPos = vector.new(x, y)
     self.position = self.startPos
 end}
-EnemyBomber.speed = 2
+EnemyBomber.speed = 1
 EnemyBomber.damage = 30
 
 function EnemyBomber:load()

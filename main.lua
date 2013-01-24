@@ -16,14 +16,16 @@ aoeimgSize = vector.new(aoeimg:getWidth(), aoeimg:getHeight())
 sfx_pew:setVolume(1)
 sfx_explosion:setVolume(1)
 
+winWidth = love.graphics.getWidth()
+winHeight = love.graphics.getHeight()
+winCenter = vector.new(winWidth / 2, winHeight/2)
+
 local menu = require('states.menu')
 local game = require('states.game')
 local pause = require('states.pause')
 local gameover = require('states.gameover')
 
 function love.load()
-    setResolution()
-
     Gamestate.registerEvents()
     Gamestate.switch(Gamestate.menu)
 
@@ -39,18 +41,4 @@ function love.keypressed(key)
     if key == 'escape' then
         love.event.quit()
     end
-end
-
-function setResolution()
-    --Record the screen dimensions
-    love.graphics.setMode(0, 0, false, false)
-    screen_width = love.graphics.getWidth()
-    screen_height = love.graphics.getHeight()
-
-    --Continue as normal
-    love.graphics.setMode(screen_width-50, screen_height-50, false, false)
-
-    winWidth = love.graphics.getWidth()
-    winHeight = love.graphics.getHeight()
-    winCenter = vector.new(winWidth / 2, winHeight/2)
 end

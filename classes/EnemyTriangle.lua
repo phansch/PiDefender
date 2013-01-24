@@ -4,7 +4,7 @@ EnemyTriangle = Class{function(self, position)
     self.position = position
     self.targetVector = vector.new(winWidth/2, winHeight/2)
 end}
-EnemyTriangle.speed = 2
+EnemyTriangle.speed = 1
 EnemyTriangle.damage = 10
 
 
