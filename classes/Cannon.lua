@@ -7,7 +7,6 @@ Cannon.speed = 5
 Cannon.circ = 0.6
 Cannon.radius = 4
 Cannon.cannonShots = {}
-Cannon.aoeShots = {}
 
 function Cannon:update(dt, circleradius)
     self.circleRadius = circleradius
@@ -30,12 +29,10 @@ function Cannon:update(dt, circleradius)
         end
     end
 
-    for i,aoeshot in ipairs(Cannon.aoeShots) do
-        aoeshot:update(dt)
-
-        -- remove aoeshot when out of bounds
-        if not aoeshot:isInBounds() then
-            table.remove(Cannon.aoeShots, i)
+    if Cannon.aoe ~= nil and Cannon.aoe.emitted then
+        Cannon.aoe:update(dt)
+        if not Cannon.aoe:isInBounds() then
+            Cannon.aoe = nil
         end
     end
 end
@@ -45,8 +42,8 @@ function Cannon:draw()
         shot:draw()
     end
 
-    for i,aoeshot in ipairs(Cannon.aoeShots) do
-        aoeshot:draw()
+    if Cannon.aoe ~= nil and Cannon.aoe.emitted then
+        Cannon.aoe:draw()
     end
 
     love.graphics.setColor(255, 255, 255, 100)
@@ -66,11 +63,6 @@ function Cannon:shoot(cannon, circleRadius)
     table.insert(Cannon.cannonShots, shot3)
 end
 
-function Cannon:shootAOE(cannon, circleRadius)
-    aoeshot = aoe(mousePos, cannon.angle + Cannon.circ/2, circleRadius + Cannon.radius)
-    table.insert(Cannon.aoeShots, aoeshot)
-end
-
 Signals.register('cannon_shoot', function(cannon, angle)
     if Cannon.allowFire then
         --love.audio.play(sfx_pew)
@@ -79,10 +71,9 @@ Signals.register('cannon_shoot', function(cannon, angle)
     end
 end)
 
-Signals.register('cannon_shootAOE', function(cannon, angle)
-    if Cannon.allowFire then
-        --love.audio.play(sfx_pew)
-        --love.audio.rewind(sfx_pew)
-        Cannon:shootAOE(cannon, angle)
-    end
+Signals.register('cannon_shootAOE', function()
+    --love.audio.play(sfx_pew)
+    --love.audio.rewind(sfx_pew)
+    Cannon.aoe = aoe()
+    Signals.emit('aoe_init', Cannon.aoe)
 end)
