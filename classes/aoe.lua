@@ -25,8 +25,6 @@ end
 
 function aoe:draw()
     if self:isInBounds() then
-        --love.graphics.circle("line", winCenter.x, winCenter.y, self.radius, 360)
-
         --draw particle systems
         for i,system in ipairs(self.ParticleSystems) do
             system:draw()
@@ -46,6 +44,7 @@ Signals.register('aoe_init', function(aoe)
             local pSystem = ParticleSystem(options[2], position)
             table.insert(aoe.ParticleSystems, pSystem)
             pSystem:play()
+            shakeCamera(0.2, 4)
         end
     end, 40)
 end)

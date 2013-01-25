@@ -28,6 +28,7 @@ local bomberCreated = false
 function state:init()
     player:load()
     stars:load()
+    cannon:load()
 
     Planet.img = love.graphics.newImage("graphics/planet.png")
     Planet.imgSize = vector.new(Planet.img:getWidth(), Planet.img:getHeight())
@@ -167,10 +168,6 @@ function state:draw()
     cam:attach()
     stars:draw()
 
-    if drawCircle then
-        cannon:draw()
-    end
-
     if bomber ~= nil then
         bomber:draw()
     end
@@ -203,7 +200,9 @@ function state:draw()
         end
     end
 
-    love.graphics.print(Cannon.aoeTimer, 10, 10)
+    if drawCircle then
+        cannon:draw()
+    end
 
     cam:detach()
 end
@@ -283,7 +282,7 @@ function state:keypressed(key)
     if key == ' ' then
         Signals.emit('cannon_shoot', cannon, circleRadius)
     end
-    if key == 'v' then
+    if key == 'b' then
         Signals.emit('cannon_shootAOE', cannon, circleRadius)
     end
 end
@@ -339,6 +338,7 @@ Signals.register('circle_hit', function(position, damage)
     pSystem:play()
 
     hitpoints = hitpoints - damage
+    Player.score = Player.score - 5
 
     --change circle color for a short amount of time
     circleColor = { 255, 0, 0, 255}
@@ -353,9 +353,6 @@ Signals.register('triangle_destroyed', function(position)
     table.insert(ParticleSystems, pSystem)
     pSystem:play()
 
-    love.audio.play(sfx_explosion)
-    love.audio.stop(sfx_explosion)
-
     Player.score = Player.score + 5
     tCount = tCount - 1
 end)
@@ -365,9 +362,6 @@ Signals.register('player_destroyed', function(position)
     local pSystem = ParticleSystem(options[1], position)
     table.insert(ParticleSystems, pSystem)
     pSystem:play()
-
-    love.audio.play(sfx_explosion)
-    love.audio.stop(sfx_explosion)
 
     shakeCamera(0.4, 2)
 

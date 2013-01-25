@@ -7,7 +7,6 @@ state.text = "Thanks for trying out the game.\n\n"
             .."Now press [space] to continue."
 
 function state:init()
-    love.audio.play(music_background)
     Introimg = love.graphics.newImage("graphics/intro.png")
     IntroimgSize = vector.new(Introimg:getWidth(), Introimg:getHeight())
 end

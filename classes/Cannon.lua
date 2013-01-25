@@ -10,6 +10,11 @@ Cannon.cannonShots = {}
 Cannon.aoeTimer = 30
 Cannon.aoeAllowed = false
 
+function Cannon:load()
+    self.icon_aoe = love.graphics.newImage("graphics/icon_aoe.png")
+    self.icon_aoe_imgSize = vector.new(self.icon_aoe:getWidth(), self.icon_aoe:getHeight())
+end
+
 function Cannon:update(dt, circleradius)
     self.circleRadius = circleradius
 
@@ -57,7 +62,18 @@ function Cannon:draw()
     love.graphics.setColor(255, 255, 255, 100)
     love.graphics.arc("line", winCenter.x, winCenter.y, self.circleRadius+Cannon.radius, self.angle, self.angle + Cannon.circ)
     love.graphics.setColor(255, 255, 255, 255)
-    local cannonCenter = vector.new(getCirclePoint(winCenter, self.angle + Cannon.circ/2, self.circleRadius).x, getCirclePoint(winCenter, self.angle + Cannon.circ/2, self.circleRadius).y)
+
+    love.graphics.draw(self.icon_aoe, winCenter.x, winCenter.y+80, 0, 0.1, 0.1)
+    --love.graphics.rectangle("fill", winCenter.x, winCenter.y+80, self.icon_aoe_imgSize.x * 0.1, self.icon_aoe_imgSize.y * 0.1)
+
+
+    if Cannon.aoeAllowed then
+        love.graphics.print("B", winCenter.x+30, winCenter.y+105)
+    elseif Cannon.aoeTimer >= 10 then
+        love.graphics.print(Cannon.aoeTimer, winCenter.x+22, winCenter.y+105)
+    else
+        love.graphics.print(Cannon.aoeTimer, winCenter.x+30, winCenter.y+105)
+    end
 end
 
 function Cannon:shoot(cannon, circleRadius)
