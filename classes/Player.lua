@@ -7,17 +7,18 @@ Player.lives = 5
 Player.score = 0
 
 function Player:load()
-    self.img = love.graphics.newImage("graphics/hexagon.png")
+    self.img = love.graphics.newImage("graphics/ship.png")
     self.imgSize = vector.new(self.img:getWidth(), self.img:getHeight())
 end
 
 function Player:update()
     self.position = mousePos
+    self.angle = math.atan2(self.position.y-mousePos.y+1, self.position.x-mousePos.x+1) + math.pi/2
 end
 
 function Player:draw()
     if self.enabled then
-        love.graphics.draw(self.img, mousePos.x - self.imgSize.x/2, mousePos.y - self.imgSize.y/2, 0)
+        love.graphics.draw(self.img, mousePos.x - self.imgSize.x/2, mousePos.y - self.imgSize.y/2, self.angle)
     end
 
     -- draw player live count

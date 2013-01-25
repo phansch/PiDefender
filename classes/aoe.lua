@@ -41,7 +41,7 @@ end
 Signals.register('aoe_init', function(aoe)
     --yes, this slows the game down quite a bit
     Timer.addPeriodic(0.01, function()
-        for i=1,360,1 do
+        for i=1,360,2 do
             local position = getCirclePoint(winCenter, i, aoe.radius)
             local pSystem = ParticleSystem(options[2], position)
             table.insert(aoe.ParticleSystems, pSystem)
