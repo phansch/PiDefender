@@ -27,7 +27,7 @@ Done
 ### Week 4 ###
 
  * [Done] New cannon ammo: AOE bombs
-    * Add a limitation on AOE usage
+    * [Done] Add a limitation on AOE usage
  * Update the title screen image
  * [Done] Fix particle systems not playing at the same time
 
@@ -35,5 +35,5 @@ Juice
 
  * Use a better shape for the player's scout ship so it will be more obvious for the player what he's supposed to do.
     * Then make the scout ship lag behind the mouse cursor a little bit
- * When the scout ship is killed, add some kind of indication that it will respawn
+ * [Done] When the scout ship is killed, add some kind of indication that it will respawn
  

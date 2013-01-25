@@ -4,9 +4,8 @@ EnemyTriangle = Class{function(self, position)
     self.position = position
     self.targetVector = vector.new(winWidth/2, winHeight/2)
 end}
-EnemyTriangle.speed = 1
+EnemyTriangle.speed = 60
 EnemyTriangle.damage = 10
-
 
 function EnemyTriangle:load()
     self.img = love.graphics.newImage("graphics/enemy1.png")
@@ -16,7 +15,7 @@ end
 function EnemyTriangle:update(dt)
     self.direction = self.position - self.targetVector
     self.angle = math.atan2(self.position.y-self.targetVector.y, self.position.x-self.targetVector.x) + math.pi/2
-    self.position = self.position + self.direction:normalized() * -1 * EnemyTriangle.speed
+    self.position = self.position + self.direction:normalized() * -1 * dt * EnemyTriangle.speed
 end
 
 function EnemyTriangle:draw()

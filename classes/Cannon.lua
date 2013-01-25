@@ -7,6 +7,8 @@ Cannon.speed = 5
 Cannon.circ = 0.6
 Cannon.radius = 4
 Cannon.cannonShots = {}
+Cannon.aoeTimer = 30
+Cannon.aoeAllowed = false
 
 function Cannon:update(dt, circleradius)
     self.circleRadius = circleradius
@@ -35,6 +37,12 @@ function Cannon:update(dt, circleradius)
             Cannon.aoe = nil
         end
     end
+
+    if Cannon.aoeTimer == 0 then
+        Cannon.aoeAllowed = true
+        Cannon.aoeTimer = 30
+    end
+
 end
 
 function Cannon:draw()
@@ -74,6 +82,14 @@ end)
 Signals.register('cannon_shootAOE', function()
     --love.audio.play(sfx_pew)
     --love.audio.rewind(sfx_pew)
-    Cannon.aoe = aoe()
-    Signals.emit('aoe_init', Cannon.aoe)
+    if Cannon.aoeAllowed == true then
+        Cannon.aoe = aoe()
+        Signals.emit('aoe_init', Cannon.aoe)
+        Cannon.aoeAllowed = false
+        Signals.emit('start_aoeCountdown')
+    end
+end)
+
+Signals.register('start_aoeCountdown', function()
+    Timer.addPeriodic(1, function() Cannon.aoeTimer = Cannon.aoeTimer - 1 end, Cannon.aoeTimer)
 end)

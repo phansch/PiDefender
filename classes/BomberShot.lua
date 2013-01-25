@@ -18,7 +18,7 @@ end
 function BomberShot:update(dt)
     self.direction = self.position - self.targetVector
     self.angle = math.atan2(self.position.y-self.targetVector.y, self.position.x-self.targetVector.x) + math.pi/2
-    self.position = self.position + self.direction:normalized() * -1 * EnemyTriangle.speed
+    self.position = self.position + self.direction:normalized() * dt * -1 * EnemyTriangle.speed
 end
 
 function BomberShot:draw()

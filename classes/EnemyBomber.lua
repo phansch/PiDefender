@@ -14,9 +14,9 @@ EnemyBomber = Class{function(self)
     local x = 0
     local choose = math.random(1, 2)
     if choose == 1 then
-        x = math.random(50, winWidth/2 - 150)
+        x = math.random(50, winWidth/2 - 200)
     else
-        x = math.random(winWidth/2 + 150, winWidth-50)
+        x = math.random(winWidth/2 + 200, winWidth-50)
     end
 
     self.startPos = vector.new(x, y)
@@ -76,4 +76,11 @@ function EnemyBomber:hasCollided(player)
 
     return self.position.x < object2_pos.x and shot_pos2.x > player.position.x and
         self.position.y < player.position.y and shot_pos2.y > player.position.y
+end
+
+function EnemyBomber:hasCollidedCircle(radius)
+    if self.position:dist(winCenter) < radius then
+        return true
+    end
+    return false
 end

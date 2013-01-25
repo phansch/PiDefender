@@ -5,9 +5,10 @@ end}
 Player.enabled = true
 Player.lives = 5
 Player.score = 0
+Player.respawnTime = 5
 
 function Player:load()
-    self.img = love.graphics.newImage("graphics/ship.png")
+    self.img = love.graphics.newImage("graphics/hexagon.png")
     self.imgSize = vector.new(self.img:getWidth(), self.img:getHeight())
 end
 
@@ -18,7 +19,7 @@ end
 
 function Player:draw()
     if self.enabled then
-        love.graphics.draw(self.img, mousePos.x - self.imgSize.x/2, mousePos.y - self.imgSize.y/2, self.angle)
+        love.graphics.draw(self.img, mousePos.x+self.imgSize.x/2, mousePos.y+self.imgSize.y/2, self.angle)
     end
 
     -- draw player live count
@@ -28,6 +29,11 @@ function Player:draw()
 
     --draw player score
     love.graphics.print("Score: "..self.score, 250, winHeight-20)
+
+    --draw respawn time
+    if Player.respawnTime ~= 5 then
+        love.graphics.print(Player.respawnTime, mousePos.x+self.imgSize.x/2, mousePos.y+self.imgSize.y/2)
+    end
 end
 
 function Player:isInsideSafezone(cannonRadius)

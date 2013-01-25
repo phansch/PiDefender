@@ -51,7 +51,7 @@ function state:update(dt)
     self:spawnEmemies()
 
     if Player.enabled then
-        player:update()
+        player:update(dt)
     end
 
     -- ## collision checks ##
@@ -140,7 +140,7 @@ function state:update(dt)
 
         --TODO: Bomber <-> aoe collision
         if Cannon.aoe ~= nil and bomber:hasCollidedCircle(Cannon.aoe.radius) then
-
+            Signals.emit('bomber_destroyed', bomber.position)
         end
     end
 
@@ -202,6 +202,9 @@ function state:draw()
             table.remove(ParticleSystems, i)
         end
     end
+
+    love.graphics.print(Cannon.aoeTimer, 10, 10)
+
     cam:detach()
 end
 
@@ -280,7 +283,7 @@ function state:keypressed(key)
     if key == ' ' then
         Signals.emit('cannon_shoot', cannon, circleRadius)
     end
-    if key == 'm' then
+    if key == 'v' then
         Signals.emit('cannon_shootAOE', cannon, circleRadius)
     end
 end
@@ -325,6 +328,8 @@ function state:startGame()
     drawCircle = true
 
     tCount = 0
+
+    Signals.emit('start_aoeCountdown')
 end
 
 Signals.register('circle_hit', function(position, damage)
@@ -374,7 +379,9 @@ Signals.register('player_destroyed', function(position)
         Player.enabled = true
         Cannon.allowFire = true
         love.mouse.setVisible(false)
+        Player.respawnTime = 5
     end)
+    Timer.addPeriodic(1, function() Player.respawnTime = Player.respawnTime - 1 end, 4)
 end)
 
 Signals.register('bomber_hit', function(bomber)
