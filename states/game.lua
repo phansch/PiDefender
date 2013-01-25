@@ -317,8 +317,13 @@ function state:startGame()
     --draw Player
     Player.enabled = true
 
+    Player.score = 0
+    Player.respawnTime = 5
+
     --allow cannon fire
     Cannon.allowFire = true
+    Cannon.aoeAllowed = false
+    Cannon.aoeTimer = 30
 
     bomber = nil
     bomberCreated = false
