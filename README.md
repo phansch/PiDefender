@@ -16,24 +16,5 @@ Story will be updated and refined during the month.
 
 ## Credits ##
 
-## To-do ##
-
-[Bugs](https://github.com/phansch/PiDefender/issues)
-
-### Week 1, 2 & 3 ###
-
-Done
-
-### Week 4 ###
-
- * [Done] New cannon ammo: AOE bombs
-    * [Done] Add a limitation on AOE usage
- * Update the title screen image
- * [Done] Fix particle systems not playing at the same time
-
-Juice
-
- * Use a better shape for the player's scout ship so it will be more obvious for the player what he's supposed to do.
-    * Then make the scout ship lag behind the mouse cursor a little bit
- * [Done] When the scout ship is killed, add some kind of indication that it will respawn
- 
+ * http://opengameart.org/content/20-crosshairs-for-re
+ * Lorc's RPG icon set http://opengameart.org/content/700-rpg-icons
